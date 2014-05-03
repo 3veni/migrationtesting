@@ -1,0 +1,7 @@
+<apex:page controller="addcontact">
+    <apex:form >
+    <apex:inputfield value="{!con.Step1__c}"/>
+    <apex:outputlabel value="{!err}"/>
+    <apex:commandbutton value="Ok" action="{!addcon}"/>
+    </apex:form>
+ </apex:page>

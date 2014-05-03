@@ -1,0 +1,43 @@
+<apex:page controller="ETAblack.TOAEditCountriesController" setup="true">
+    <apex:form >
+        <apex:sectionHeader title="Countries Edit" rendered="{!NOT(isDetail)}"/>
+        <apex:sectionHeader title="Countries Detail" rendered="{!isDetail}"/>
+        <apex:pageBlock title="Countries Information">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Edit" action="{!editCountry}" rendered="{!isDetail}"/>
+                <apex:commandButton value="Save" action="{!saveCountry}" rendered="{!NOT(isDetail)}"/>
+                <apex:commandButton value="Cancel" action="{!goBack}" rendered="{!NOT(isDetail)}" immediate="true"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Name" for="name"/>
+                    <apex:outputPanel id="name">
+                        <apex:outputField value="{!country.Name}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!country.Name}" required="true" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Country Code" for="code"/>
+                    <apex:outputPanel id="code">
+                        <apex:outputField value="{!country.ETAblack__Country_Code__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!country.ETAblack__Country_Code__c}" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default?" for="default"/>
+                    <apex:outputPanel id="default">
+                        <apex:outputField value="{!country.ETAblack__Default__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!country.ETAblack__Default__c}" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Parent ID" for="parentId"/>
+                    <apex:outputPanel id="parentId">
+                        <apex:outputField value="{!country.ETAblack__Parent_ID__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!country.ETAblack__Parent_ID__c}" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

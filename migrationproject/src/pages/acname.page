@@ -1,0 +1,5 @@
+<apex:page standardController="Job_Applicaton__c">
+<apex:pageBlock title="Hello{!$User.FirstName}">
+You are viewing the {!Job_Applicaton__c.name}account.
+</apex:pageBlock>
+</apex:page>

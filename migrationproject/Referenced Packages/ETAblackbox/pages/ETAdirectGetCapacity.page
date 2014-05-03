@@ -1,0 +1,41 @@
+<apex:page controller="ETAblack.ETAdirectGetCapacityController" showHeader="false" sidebar="false">
+    <script type="text/javascript">
+        function goToParent(result)
+        {
+            alert(result);
+            window.close();
+            window.opener.location.href = '/' + '{!$CurrentPage.Parameters.contactId}';
+        }
+    </script>
+    <apex:form >
+        <div style="display:none">
+            <apex:pageMessages escape="false" id="message"/>
+        </div>
+        <br/>
+        <span style="font-size:150%;margin-left:5px;">Capacity Infomation</span>
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Capacity Category" for="category"/>
+                    <apex:selectList value="{!ETACapacity.ETAblack__Capacity_Cateogry__c}" id="category" size="1" required="true">
+                    <apex:selectOptions value="{!CapacityCategoryOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Time Slots" for="timeSlots"/>
+                    <apex:selectList value="{!ETACapacity.ETAblack__Time_Slot__c}" id="timeSlots" size="1" required="true">
+                    <apex:selectOptions value="{!TimeSlotOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Date" for="date"/>
+                    <apex:inputField value="{!ETACapacity.ETAblack__Date__c}" id="date" required="true"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Get Capacity" action="{!getCapacity}"/>
+                <apex:commandButton value="Cancel" onclick="javascript:window.close();"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

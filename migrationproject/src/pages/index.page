@@ -1,0 +1,12 @@
+<apex:page standardController="Account">
+    <apex:form >
+    <apex:pageBlock title="Edit Account: {!Account.Name}">
+        <apex:pageBlockSection title="Account Details">
+            <apex:inputText value="{!Account.Name}" tabIndex="2"/>
+            <apex:inputText value="{!Account.Website}" tabIndex="1"/>
+            <apex:inputText value="{!Account.Industry}" tabIndex="4"/>
+            <apex:inputText value="{!Account.AnnualRevenue}" tabIndex="3"/>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

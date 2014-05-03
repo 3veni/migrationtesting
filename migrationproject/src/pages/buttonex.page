@@ -1,0 +1,11 @@
+<apex:page standardController="Job_Applicaton__c">
+<apex:form >
+<apex:pageBlock title="Hello{!$User.FirstName}!">
+You are viewing the {!Job_Applicaton__c.name} account.
+<p/>Change job app Name:<p/>
+<apex:inputField value="{!Job_Applicaton__c.Cover_Letter__c}"/>
+<p/>
+<apex:commandButton action="{!save}" value="Save New job app Name"/>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

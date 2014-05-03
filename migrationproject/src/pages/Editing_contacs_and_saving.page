@@ -1,0 +1,21 @@
+<apex:page controller="Editing_contacs_and_savingctrl">
+     <apex:form >
+         <apex:pageblock >
+             <apex:pageblocktable value="{!alist}" var="a" id="pb">
+                 <apex:column headerValue="Action" width="10">
+                      <apex:commandlink value="Edit" action="{!editacc}" rendered="{!if((a.id !=acid),true,false)}">
+                          <apex:param name="accid" assignTo="{!accid}" value="{!a.id}"/>
+                      </apex:commandlink>
+                      <apex:commandlink value="Save" rendered="{!if((a.id =acid),true,false)}" rerender="pb" />&nbsp;&nbsp;&nbsp;&nbsp;
+                      <apex:commandlink value="Cancel" action="{!editacc}" rendered="{!if((a.id ==acid),true,false)}">
+                          <apex:param name="accid" assignTo="{!accid}" value=""/>
+                      </apex:commandlink>
+                 </apex:column>
+                 <apex:column headerValue="Account name">
+                     <apex:outputtext value="{!a.name}" rendered="{!if((a.id !=acid),true,false)}"/>
+                     <apex:inputtext value="{!a.name}" rendered="{!if((a.id =acid),true,false)}"/>
+                 </apex:column>
+             </apex:pageblocktable>
+        </apex:pageblock>
+     </apex:form>
+</apex:page>

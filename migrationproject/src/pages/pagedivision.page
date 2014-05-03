@@ -1,0 +1,75 @@
+<apex:page showHeader="false" sidebar="false" >
+    <apex:form >
+        <style type="text/css">
+            #ptop{
+            width:1345px;
+            height:80px;
+            float:top;
+            
+            }
+           #pbottom{
+           width:1345px;
+           height:400px;
+           background:white
+           }
+           #bottomleft{
+           width:150px;
+           height:400px;
+           background:white;
+           
+           float:left
+           }
+           #bottomright{
+           width:250px;
+           height:400px;
+           background:white;
+           float:right;
+           }
+           #bottomcenter{
+           width:845px;
+           height:400px;
+           background:white;
+           float:left
+           }
+            #bottomcenter1{
+           width:845px;
+           height:100px;
+           background:blue;
+           float:left
+           }
+#bottomcenter2{
+           width:845px;
+           height:300px;
+           background:white;
+           float:left
+           }
+           
+        </style>
+        <div>
+            <div id="ptop" style="background-color:#C0F7FE;height:80px;color:white;font-family: Arial Black; font-size: 34px;">
+               <center>
+                     <b>Leave Management</b>
+              </center>  
+            </div>
+            <div id="pbottom">
+            
+                <div id="bottomleft">
+                <br/><br/><br/><br/><br/><br/><br/>
+                    <apex:commandlink > <apex:image url="{!$Resource.Applyleave}" height="50px"/></apex:commandlink><br/><br/>
+                    <apex:commandlink ><apex:image url="{!$Resource.Cancelleave}" height="50px"/></apex:commandlink><br/><br/>
+                    <apex:commandlink ><apex:image url="{!$Resource.Leaveinfo}" height="55px"/></apex:commandlink><br/>
+                </div>
+          
+              <div id="bottomcenter" >
+                <div id="bottomcenter1">
+                </div>
+                <div id="bottomcenter2" style="background-image:url('{!$Resource.Rachika_WaterMark}');background-attachment:fixed;background-repeat:no-repeat;background-position:center; font-family: Arial white">
+                </div>
+                               </div>
+               <div id="bottomright" >
+               <apex:image url="{!$Resource.person}" height="400px" width="250px"/>
+               </div>
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

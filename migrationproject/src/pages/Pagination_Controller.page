@@ -1,0 +1,17 @@
+<apex:page controller="Pagination_Controller">
+    <apex:form >
+    <apex:pageBlock title="Pagination" id="pb">
+        <apex:pageBlockTable id="tb" value="{!lstAccounts}" first="{!currentPage}" rows="{!pageSize}" var="a">
+            <apex:column value="{!a.Name}"/>
+            <apex:column value="{!a.Phone}"/>
+        </apex:pageBlockTable>
+        <center>
+        <apex:commandButton value="First" action="{!showFirst}" rerender="tb" disabled="{!!showPrevious}"/>
+        <apex:commandButton value="Previous" action="{!showPrevious}" rerender="tb" disabled="{!!showPrevious}"/>
+        <apex:commandButton value="Next" action="{!showNext}" rerender="tb" disabled="{!!showNext}"/>
+        <apex:commandButton value="Last" action="{!showLast}" rerender="tb" disabled="{!!showNext}"/>
+        </center>
+        <apex:outputText value="{!currentPageInfo}" />
+    </apex:pageBlock> 
+    </apex:form>
+</apex:page>

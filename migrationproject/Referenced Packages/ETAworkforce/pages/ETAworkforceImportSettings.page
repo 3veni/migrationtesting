@@ -1,0 +1,37 @@
+<apex:page controller="TOA.ETAworkforceSettingsController" sidebar="false"
+    showHeader="false" title="Import settings">
+    <table id="triggerMsgTable" cellspacing="0" cellpadding="0"
+       border="0" style="display: none">
+       <colgroup span="3"></colgroup>
+          <tbody>
+             <tr>
+                <td style="vertical-align: middle;"><img
+                   src="/img/approvals/stopsign_16x16.gif" alt="Error" title="Error" />
+                </td>
+                <td id="triggerMsg"
+                   style="vertical-align: middle; font-weight: bold; color: red;"></td>
+             </tr>
+          </tbody>
+    </table>
+    <apex:form >
+        <apex:PageMessages id="theMesssages" />
+        <apex:pageBlock title="Import settings">
+            <apex:pageBlockSection columns="1">
+                <apex:outputText style="font-style:italic;font-weight:bold">
+                    <h1>Click on the {!$ObjectType.Document.Fields.Name.Label} to
+                        import settings.</h1>
+                </apex:outputText>
+                <apex:pageBlockTable value="{!documents}" var="document"
+                    id="theTable">
+                    <apex:column headerValue="{!$ObjectType.Document.Fields.Name.Label}" width="5%"
+                        styleClass="actionColumn">
+                        <apex:outputPanel onclick="var winMain=window.opener;if (null==winMain) winMain=window.parent.opener;winMain.ImportDocument('{!JSENCODE(document.DocId)}','{!JSENCODE(document.TriggerBodies)}','{!JSENCODE(document.ZippedFields)}');"
+                            styleClass="actionLink" style="cursor: pointer">{!JSENCODE(document.Name)}</apex:outputPanel>
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.Document.Fields.Description.Label}"
+                        width="50%">{!JSENCODE(document.Description)}</apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

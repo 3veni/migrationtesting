@@ -1,0 +1,69 @@
+<apex:page standardController="TOA__ETAworkforce_mapping_dictionary__c" extensions="TOA.ETAworkforceDictionaryController" id="thePage" tabStyle="ETAworkforceTab__tab"
+title="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.LabelPlural} {!$ObjectType.TOA__ETAworkforceNotification__c.Fields[DestinationFieldName].Label} {!IF($CurrentPage.parameters.new=='true',"New","Edit")}">
+<script src="{!URLFOR($Resource.TOAUtils)}" language="JavaScript" type="text/javascript"></script>
+<apex:sectionHeader title="ETAworkforce v{!PackageVersion}" 
+   subtitle="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.LabelPlural} {!$ObjectType.TOA__ETAworkforceNotification__c.Fields[DestinationFieldName].Label} {!IF($CurrentPage.parameters.new=='true',"New","Edit")}" />
+    <apex:form id="theForm">
+        <apex:pageMessages id="theMesssages" />
+        
+        <apex:pageBlock mode="edit"  id="theBlock">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!save}" value="Save" style="padding:5px;"/>
+                <apex:commandButton action="{!cancel}" value="Cancel" style="padding:5px;"/>
+                <apex:commandButton action="{!delete}" value="Delete" style="padding:5px;"/>
+            </apex:pageBlockButtons>
+            <apex:outputField value="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZG}" rendered="false"/>
+            <apex:outputField value="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZE}" rendered="false"/>
+            <apex:pageBlockSection columns="1" id="theSection">
+                <apex:PageBlockSectionItem id="theSFNVSection">
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZI.Label}" for="theSFNV"  rendered="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZH}"/>
+                        <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZF.Label}" for="theSFNV"  rendered="{!!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZH}"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="theSFNVPanel">
+                        <div class="requiredInput">
+                            <div class="requiredBlock"> </div>
+                            <apex:inputField value="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZI}" id="theSFNV" 
+                                style="width:300px"
+                                Label="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZI.Label}"
+                                required="true" />
+                         </div>                        
+                    </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+                <apex:PageBlockSectionItem id="theSFOVSection" rendered="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZH}">
+                    <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZJ.Label}" for="theSFOV" id="theSFOVLabel"/>
+                    <apex:outputPanel id="theSFOVPanel">
+                            <apex:inputField value="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZJ}" id="theSFOV" 
+                                style="width:300px;disable:true;" Label="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZJ.Label}"/>
+                                
+                    </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+                
+                <apex:PageBlockSectionItem id="theDFVSection">
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZI.Label}" for="theSFNV"  rendered="{!!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZH}"/>
+                        <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZF.Label}" for="theSFNV"  rendered="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZH}"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="theDFVPanel">
+                        <div class="requiredInput">
+                            <div class="requiredBlock"> </div>
+                            <apex:inputField value="{!TOA__ETAworkforce_mapping_dictionary__c.00N90000007MeZF}" id="theDFV" 
+                                style="width:300px"
+                                Label="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.Fields.00N90000007MeZF.Label}"
+                                required="true" />
+                         </div>                        
+                    </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+                <apex:PageBlockSectionItem id="theReverseFlagSection">    
+                    <apex:outputLabel value="Add reverse mapping" for="theReverseFlag"/>
+                    <apex:outputPanel id="theReverseFlagPanel">
+                            <apex:inputCheckBox value="{!addReverse}" id="theReverseFlag" style="width:300px" Label="Add reverse mapping" 
+                            />
+                    </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+    </script>
+</apex:page>

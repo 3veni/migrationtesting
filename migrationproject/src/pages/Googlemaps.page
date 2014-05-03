@@ -1,0 +1,110 @@
+<apex:page standardController="Account">
+<apex:form >
+<!--<apex:sectionHeader title="Account " subtitle="Information"/>
+<apex:pageBlock title="Account Information">
+<apex:pageBlockSection columns="2">
+<apex:outputField value="{!Account.Name}"/>
+<apex:outputField value="{!Account.Phone}"/>
+<apex:outputField value="{!Account.BillingStreet}"/>
+<apex:outputField value="{!Account.BillingCity}"/>
+<apex:outputField value="{!Account.BillingState}"/>
+<apex:outputField value="{!Account.BillingPostalCode}"/>
+
+</apex:pageBlockSection>
+</apex:pageBlock>-->
+</apex:form>
+<apex:pageBlock title="Customer Address Map">
+<head>
+ 
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> 
+<script type="text/javascript"> 
+ alert('hai');
+$(document).ready(function() {
+  alert('hello');
+  var myOptions = {
+    zoom: 20,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    mapTypeControl: true
+  }
+  
+  var map;
+  var marker;
+  
+  var geocoder = new google.maps.Geocoder();
+  var address = "{!Account.BillingStreet}, " + "{!Account.BillingCity}, " + "{!Account.BillingPostalCode}";
+  
+  var infowindow = new google.maps.InfoWindow({
+    content: "<b>{!Account.Name}</b>"
+  });
+ 
+  geocoder.geocode( { address: address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK && results.length) {
+      if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+      
+        //create map
+        map = new google.maps.Map(document.getElementById("map"), myOptions);
+      
+        //center map
+        map.setCenter(results[0].geometry.location);
+        var lat=results[0].geometry.location;
+       alert('Location is'+lat);
+        //create marker
+        marker = new google.maps.Marker({
+            position: results[0].geometry.location,
+            map: map,
+            title: "{!Account.Name}"
+        });
+        
+        //add listeners
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.open(map,marker);
+        });
+        google.maps.event.addListener(infowindow, 'closeclick', function() {
+          map.setCenter(marker.getPosition()); 
+          
+        });
+        
+      }
+      
+    } else {
+      $('#map').css({'height' : '15px'});
+      $('#map').html("Oops! {!Account.Name}'s address could not be found, please make sure the address is correct.");
+      resizeIframe();
+    }
+  });
+  
+  function resizeIframe() {
+    var me = window.name;
+    if (me) {
+      var iframes = parent.document.getElementsByName(me);
+      if (iframes && iframes.length == 1) {
+        height = document.body.offsetHeight;
+        iframes[0].style.height = height + "px";
+      }
+    }
+  }
+  
+});
+</script>
+ 
+<style>
+#map {
+  font-family: Arial;
+  font-size:12px;
+  line-height:normal !important;
+  height:400px;
+  background:transparent;
+}
+</style>
+ 
+</head>
+ 
+<body>
+<div id="map"></div> 
+</body> 
+
+</apex:pageBlock>
+
+
+</apex:page>

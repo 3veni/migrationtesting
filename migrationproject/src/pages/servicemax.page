@@ -1,0 +1,163 @@
+<apex:page controller="ServiceMax" sidebar="false" showHeader="false" action="{!pageLoad}">
+    <html>
+        <head>
+            <script src="/soap/ajax/29.0/connection.js" type="text/javascript"></script>
+            <script type="text/javascript">__sfdcSessionId = '{!$Api.Session_Id}';</script>
+            <link href="{!$Resource.fullcalendarcss}" rel='stylesheet' ></link>
+            <link href="{!$Resource.fullcalendarprint}" rel='stylesheet' media='print'></link>
+            <script src="{!$Resource.jquerymin}"></script>
+            <script src="{!$Resource.jquerycustom}"  ></script>
+            <script src="{!$Resource.fullcalendarmin}" rel='stylesheet' ></script>
+            <script>
+                function allowDrop(ev)
+                {
+                    ev.preventDefault();
+                }
+                function drag(ev)
+                {
+                    ev.dataTransfer.setData("Text",ev.target.id);
+                   
+                }
+                function drop(ev)
+                {
+                    sforce.connection.sessionId = '{!$Api.Session_ID}';
+                    ev.preventDefault();
+                    var data=ev.dataTransfer.getData("Text");
+                    ev.target.appendChild(document.getElementById(data));
+                    var work= new sforce.SObject("Work_Order__c"); 
+                    work.id =data ; 
+                    work.Technician__c=ev.target.id;
+                    var result = sforce.connection.update([work]);
+                    window.location.reload();
+                }
+                //We need to wrap everything in a doc.ready function so that the code fires after the DOM is loaded
+                $(document).ready(function(){   
+                                    var tech;
+                            //Call the fullCallendar method. You can replace the '#calendar' with the ID of the dom element where you want the calendar to go. 
+                                    $('#calendar').fullCalendar({
+                                                    header: {
+                                                    left: 'prev,next',
+                                                    center: 'title',
+                                                    right: 'month,agendaWeek,agendaDay'
+                                                    },
+                                                    selectable: true,
+                                                    selectHelper:true,
+                                                    select: function(start, end, allDay) {
+                                                             var title = prompt('Event Title:');
+                                                             tech =prompt('Enter Technician Name');
+                                                             var wo = prompt('Enter Work Order Id');
+                                                             if (title || tech || wo) {
+                                    //calendar.fullCalendar('renderEvent', {title: title,start: start,end: end,allDay: allDay},true // make the event "stick" );
+                                                             document.getElementById("{!$Component.frm.HiddenId1}").value=tech;
+                                                             document.getElementById("{!$Component.frm.HiddenId2}").value=wo;
+                                                             document.getElementById("{!$Component.frm.HiddenId3}").value=start;
+                                                             document.getElementById("{!$Component.frm.HiddenId4}").value=end;
+                                                             calapex();
+                                                             }
+                                                             
+                                                           },
+                                                   
+                                                    events:
+                                                    [
+                                                        //At run time, this APEX Repeat will reneder the array elements for the events array
+                                                        <apex:repeat value="{!events}" var="e">
+                                                            {
+                                                                title: "{!e.title}",
+                                                                start: '{!e.startString}',
+                                                                end: '{!e.endString}',
+                                                                url: '{!e.url}' ,
+                                                                allDay: {!e.allDay},
+                                                                className: '{!e.className}'
+                                                            },
+                                                        </apex:repeat>
+                                                    ],
+                                                     editable: true,
+                                                     eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+                                                                     document.getElementById("{!$Component.frm.HiddenId5}").value=dayDelta;
+                                                                     document.getElementById("{!$Component.frm.HiddenId6}").value=event.title;
+                                                                     calapex1();
+                                                                    alert(
+                                                                            "The end date of " + event.title + "has been moved " +dayDelta + " days and " + minuteDelta + " minutes."
+                                                                         );calendar.fullCalendar('unselect');
+                                                                         },
+                                                     eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
+                                                                     document.getElementById("{!$Component.frm.HiddenId7}").value=event.title;
+                                                                     document.getElementById("{!$Component.frm.HiddenId8}").value=dayDelta;
+                                                                     calapex2(); 
+                                                                    alert(event.title + " was moved " +dayDelta + " days and " +minuteDelta + " minutes.");
+                                                                    if (!confirm("Are you sure about this change?")) {
+                                                                           revertFunc();   
+                                                                     }
+                                                                 }
+                                                    /* eventMouseover:function( event, jsEvent, view ) {
+                                                                     $( this ).find( "div" ).text( event.title+event.start );
+                                                                    // alert(event.title+'    '+event.start+'   '+event.end);
+                                                                      }*/
+                                             });
+                                    });
+                    <!--some styling. Modify this to fit your needs-->
+            </script>
+            <style>
+                #cal-legend { float:right;}
+                #cal-legend ul {margin:0;padding:0;list-style:none;}
+                #cal-legend ul li {margin:0;padding:5px;float:left;}
+                #cal-legend ul li span {display:block; height:16px; width:10px; margin-right:4px; float:left; border-radius:4px;}
+                #calendar a:hover {color:#fff !important;}
+                .event-birthday {background:#cc9933;border-color:#cc9933;}
+                .event-personal {background:#1797c0;border-color:#1797c0;}
+                .pbtable {text-align:center;}
+             </style>
+        </head>
+        <body>
+           <apex:form id="frm">
+           <apex:inputHidden id="HiddenId1" value="{!TechName}" />
+           <apex:inputHidden id="HiddenId2" value="{!WOId}" />
+           <apex:inputHidden id="HiddenId3" value="{!startDate}" /> 
+           <apex:inputHidden id="HiddenId4" value="{!endDate}" />
+           <apex:actionFunction name="calapex" action="{!calfromJQuery}">
+           </apex:actionFunction>
+           <apex:inputHidden id="HiddenId5" value="{!extendeddays}" />
+           <apex:inputHidden id="HiddenId6" value="{!weid}" />
+           <apex:actionFunction name="calapex1" action="{!resizingevent}">
+           </apex:actionFunction>
+              <apex:inputHidden id="HiddenId7" value="{!woeid}" />
+               <apex:inputHidden id="HiddenId8" value="{!moveddays}" />
+            <apex:actionFunction name="calapex2" action="{!replacingevent}">
+           </apex:actionFunction>
+           <div style="background-color:white;">
+               <div style="height:200px;width:1200px;left:70px;top:5px;position:relative;overflow:auto;border:1px solid black;">
+                   <apex:pageBlock mode="maindetail"  ><apex:outputLabel style="font-size:20px;" ><center>Work Orders</center></apex:outputLabel>
+                       <apex:pageBlockTable value="{!WorkList}" var="w"  >
+                           <apex:column headerValue="Work Orders" headerClass="pbtable" styleClass="pbtable"> <p  id="{!w.id}" draggable="true" ondragstart="drag(event)" >{!w.Name }</p></apex:column>                     
+                           <!--apex:column value="{!w.Status__c}" headerClass="pbtable" styleClass="pbtable"/-->
+                           <apex:column value="{!w.Start_Date__c}" headerClass="pbtable" styleClass="pbtable"/>
+                           <apex:column value="{!w.End_Date__c}" headerClass="pbtable" styleClass="pbtable"/>
+                           <!--apex:column value="{!w.Email__c }" headerClass="pbtable" styleClass="pbtable"/-->
+                           <apex:column value="{!w.Technician__r.name}" headerClass="pbtable" styleClass="pbtable"/>
+                        </apex:pageBlockTable> 
+                    </apex:pageBlock>
+                </div>
+                <div style="height:400px;width:1250px;left:60px;top:20px;position:relative;background-color:white;">
+                    <div style="height:660px;width:280px;left:10px;top:10px;position:relative;overflow:auto;border:1px solid black;">
+                        <apex:pageBlock mode="maindetail">
+                            <apex:outputLabel style="font-size:20px;" ><center>Technicians</center></apex:outputLabel>
+                            <apex:pageBlockTable value="{!TechList}" var="t">
+                                <apex:column headerValue="Technician Name" headerClass="pbtable" styleClass="pbtable"><center><p  id="{!t.id}" ondrop="drop(event)" ondragover="allowDrop(event)">{!t.name }</p> </center></apex:column>
+                            </apex:pageBlockTable>
+                        </apex:pageBlock>
+                     </div>
+                     <div style="height:660px;width:900px;left:310px;top:10px;position:absolute;float:right;border:1px solid black;" id="calPanel">
+                         <div id="cal-legend">
+                             <ul>
+                                 <li><span class="event-birthday"></span>Technician's Birthdays</li>
+                                 <li ><span class="event-personal"></span>My Events</li>
+                             </ul>
+                         </div>
+                         <div id='calendar' style="height:630px;width:800px;left:50px;top:25px;position:absolute;float:left;border:1px solid black;"></div>
+                     </div>
+                  </div>
+              </div>
+           </apex:form>
+       </body>
+    </html>
+</apex:page>

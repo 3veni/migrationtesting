@@ -1,0 +1,88 @@
+<apex:page controller="ETAblack.Workforce2_SettingsDictionaryCtrl" 
+    title="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.LabelPlural} {!$ObjectType.ETAblack__Workforce2_ActivityMessage__c.Fields[$CurrentPage.parameters.dsfn].Label}"
+    id="thePage"><!-- 
+    tabStyle="WorkforceTab__tab" -->
+    <apex:sectionHeader title="{!$Label.etablack__ProductName} v{!PackageVersion}" 
+        subtitle="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.LabelPlural} {!$ObjectType.ETAblack__Workforce2_ActivityMessage__c.Fields[$CurrentPage.parameters.dsfn].Label}" 
+        help="{!URLFOR($Page.ETAblack__Workforce2_HelpPage,null,['id'='MappingDictionary'])}" />
+        <style type="text/css">
+            .TOAActionColumn
+            {
+                min-width:70pt;
+                width:5%;
+            }
+            .TOADataColumn
+            {
+                min-width:120pt;
+                width:5%;
+            }
+        </style>
+    <apex:form id="theForm">
+        <apex:pageMessages id="theMesssages" />
+        <apex:pageBlock title="{!$Label.etablack__To_message}" id="theOutgoingListBlock">
+            <apex:pageBlockButtons location="top">
+                <apex:commandLink action="{!URLFOR($Page.Workforce2_MappingDictionaryItemPage,null,['outgoing'=true,
+                    'dsfn'=$CurrentPage.parameters.dsfn,'objname'=$CurrentPage.parameters.objname,'reverse'='false','new'='true',
+                    'retURL'=$Page.Workforce2_MappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" 
+                value="{!$Label.etablack__New}" styleClass="btn" style="padding:5px; text-decoration:none;" />
+                <apex:commandLink immediate="true" onclick="window.close()" value="{!$Label.etablack__Close}" styleClass="btn" style="padding:5px; text-decoration:none;vertical-align: middle" />
+            </apex:pageBlockButtons>
+
+            <span style="width:20%;display:inline-block" />
+            <apex:variable value="{!mappingDictionary[0]}" var="firstList"/>
+            <apex:pageBlockTable value="{!firstList}" var="dict" id="theDictFields" style="display:inline-table;width:1px;" rendered="{!!firstList.empty}">
+                <apex:column headerValue="{!$Label.etablack__Action}" headerClass="TOAActionColumn" styleClass="actionColumn">
+                    <apex:commandLink action="{!URLFOR($Action.Workforce2_MappingDictionary__c.Delete,dict['Id'],
+                        ['retURL'=$Page.Workforce2_MappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" 
+                        value="{!$Label.etablack__Delete}" reRender="theOutgoingListBlock" styleClass="actionLink" onclick="if (!(Modal.confirm && Modal.confirm(LC.getLabel('Global', 'are_you_sure'))) &&
+                            !(!Modal.confirm && window.confirm(LC.getLabel('Global', 'are_you_sure')))) return false;"/> 
+                    |&nbsp;
+                    <apex:commandLink action="{!URLFOR($Page.Workforce2_MappingDictionaryItemPage,dict['Id'],['Id'=dict['Id'],'reverse'='false',
+                         'retURL'=$Page.Workforce2_MappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" 
+                         value="{!$Label.etablack__Edit}" reRender="theOutgoingListBlock" styleClass="actionLink" /> 
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__LinkedTypeFieldValue__c.Label}"  headerClass="TOADataColumn" style="width:1px;text-align:right">
+                    <apex:outputText >"{!dict.LinkedTypeFieldValue__c}"</apex:outputText>
+                </apex:column>
+                <apex:column headerValue="=>" style="width:1px;text-align:center;">
+                    <apex:outputText ><span style="font-weight:bold;font-size:large">&rarr;</span></apex:outputText>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__MessageFieldValue__c.Label}" headerClass="TOADataColumn" style="width:1px;text-align:left;">
+                    <apex:outputText >"{!dict.MessageFieldValue__c}"</apex:outputText>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:pageBlock title="{!$Label.etablack__From_message}" id="theIncomingListBlock">
+            <apex:pageBlockButtons location="top">
+                <apex:commandLink action="{!URLFOR($Page.Workforce2_MappingDictionaryItemPage,null,['outgoing'=false,'dsfn'=$CurrentPage.parameters.dsfn,
+                    'objname'=$CurrentPage.parameters.objname,'reverse'='false','new'='true',
+                    'retURL'=$Page.Workforce2_MappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" 
+                    value="{!$Label.etablack__New}" styleClass="btn" style="padding:5px; text-decoration:none;" /> 
+                <apex:commandLink immediate="true" onclick="window.close()" value="{!$Label.etablack__Close}" styleClass="btn" style="padding:5px; text-decoration:none;" />
+            </apex:pageBlockButtons>
+            <span style="width:20%;display:inline-block" />
+            <apex:variable value="{!mappingDictionary[1]}" var="secondList"/>
+            <apex:pageBlockTable value="{!secondList}" var="dict" id="theDictFields" style="width:1px;display:inline-table" rendered="{!!secondList.empty}">
+                <apex:column headerValue="{!$Label.etablack__Action}" style="width:5%" headerClass="TOAActionColumn" styleClass="actionColumn">
+                    <apex:commandLink action="{!URLFOR($Action.Workforce2_MappingDictionary__c.Delete,dict['Id'],
+                        ['retURL'=$Page.Workforce2_MappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" 
+                        value="{!$Label.etablack__Delete}" reRender="theIncomingListBlock" styleClass="actionLink" onclick="if (!(Modal.confirm && Modal.confirm(LC.getLabel('Global', 'are_you_sure'))) &&
+                            !(!Modal.confirm && window.confirm(LC.getLabel('Global', 'are_you_sure')))) return false;"/>
+                    |&nbsp;
+                   <apex:commandLink action="{!URLFOR($Page.Workforce2_MappingDictionaryItemPage,dict['Id'],
+                        ['Id'=dict['Id'],'reverse'='false','retURL'=$Page.Workforce2_MappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" 
+                        value="{!$Label.etablack__Edit}" reRender="theIncomingListBlock" styleClass="actionLink" /> 
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__MessageFieldValue__c.Label}" headerClass="TOADataColumn" style="width:1px;text-align:right">
+                    <apex:outputText >"{!dict.LinkedTypeFieldValue__c}"</apex:outputText>
+                </apex:column>
+                <apex:column headerValue="=>" style="width:1px;text-align:center">
+                    <apex:outputText ><span style="font-weight:bold;font-size:large">&rarr;</span></apex:outputText>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__LinkedTypeFieldValue__c.Label}" headerClass="TOADataColumn" style="width:1px;text-align:left">
+                    <apex:outputText >"{!dict.MessageFieldValue__c}"</apex:outputText>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,24 @@
+<apex:page standardController="Account" 
+           extensions="DynamicAccountFieldsLister"> 
+
+    <apex:pageMessages /><br/>
+    
+    <apex:form >
+        <apex:pageBlock title="Edit Account" mode="edit">
+            <apex:pageBlockSection columns="1" >
+            <apex:inputfield value="{!a.BillingCity}"/>
+            <apex:inputfield value="{!a.Phone}"/>
+                <apex:repeat value="{!editableFields}" var="f">
+                    <apex:pageBlock >
+                      <apex:pageBlockSection columns="1" >
+                    <apex:inputField value="{!Account[f]}"/>
+                     </apex:pageBlockSection>
+                     </apex:pageBlock>
+                </apex:repeat>
+                
+                <apex:commandbutton value="+" action="{!re}"/>
+           </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    
+</apex:page>

@@ -1,0 +1,12 @@
+<apex:page controller="JobApp">
+    <apex:form >
+    <apex:pageBlock >
+        <apex:inputText value="{!j1.Position__c}"/>
+        <apex:inputText value="{!j1.Status__c}" rendered="{!!b1}" alt="Your Position already filled"/>
+       <apex:pageBlockTable value="{!j1}" var="J1obj">
+       <apex:column value="{!J1obj.Position__c}"/>
+       <apex:column value="{!J1obj.Status__c}"/>
+      </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+ </apex:page>

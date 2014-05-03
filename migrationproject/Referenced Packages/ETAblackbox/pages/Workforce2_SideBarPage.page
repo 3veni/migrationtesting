@@ -1,0 +1,62 @@
+<apex:page setup="false" 
+        sidebar="false" 
+        cache="{!IF($Organization.Id=='00Dd0000000gXVqEAM',false,true)}" 
+        expires="600" 
+        readOnly="true" 
+        showHeader="false" 
+        showChat="false"
+        standardStylesheets="false" 
+        controller="ETAblack.Workforce2_SideBarController">
+    <div style="text-align:center;vertical-align:center;font-size:8pt">
+    <apex:outputPanel rendered="{!ChartType=='Pie'}">
+        <div style="margin-top:0px">
+            <a href="{!URLFOR($Page.ETAblack__Workforce2_ActivityMessagesPage,null,['fcf'=ListViewIds['All']])}" target="ActivityMessages">
+                <apex:chart data="{!Data}" height="120" width="120" animate="false" >
+                    <apex:pieSeries labelField="status" dataField="quantity" donut="50" highlight="false" colorSet="#E8372A,#59E884,#0000BA,#CBE849,#9BE8E8">
+                        <apex:chartLabel display="rotate" field="quantity"/>
+                    </apex:pieSeries>
+                </apex:chart>
+            </a>
+        </div>
+    </apex:outputPanel>
+        <apex:outputPanel rendered="{!ChartType=='Gauge'}">
+        <a href="{!URLFOR($Page.ETAblack__Workforce2_ActivityMessagesPage,null,['fcf'=ListViewIds['All']])}" target="ActivityMessages">
+            <apex:chart data="{!Health}" height="120" width="175" legend="false">
+                <apex:axis type="Gauge" position="left"  title="{!Health[0].healthValue}%" minimum="0" maximum="100"  steps="25" fields="health" dashSize="10"/>
+                <apex:gaugeSeries dataField="health"  highlight="false" tips="false" needle="false" labelField="status" colorSet="#59E884, #E8372A" donut="50"  >
+                    <apex:chartLabel />
+                </apex:gaugeSeries>
+            </apex:chart>
+        </a>
+        </apex:outputPanel>
+    </div>
+    <apex:outputPanel rendered="{!ChartType=='Table'}">
+    <table style="font-size:75%;width:100%;font-family: Arial,Helvetica,sans-serif" >
+        <tbody>
+            <tr>
+                <td width="30%"><a id="new_link_ctrl" href="{!URLFOR($Page.Workforce2_ActivityMessagesPage,null,['fcf'=ListViewIds['New']])}" 
+                    target="ActivityMessages" style="color:blue;text-decoration:none">New:</a></td>
+                <td id="new_ctrl"  >{!Counts['new']}</td>
+                <td width="40%" ></td><td width="30%"  height="1pt"><a id="pending_link_ctrl" href="{!URLFOR($Page.Workforce2_ActivityMessagesPage,null,['fcf'=ListViewIds['Pending']])}" 
+                    target="ActivityMessages" style="color:blue;text-decoration:none">Pending:</a></td>
+                <td id="pending_ctrl"  height="1pt">{!Counts['pending']}</td>
+            </tr>
+            <tr>
+                <td width="30%" ><a id="failed_link_ctrl" href="{!URLFOR($Page.Workforce2_ActivityMessagesPage,null,['fcf'=ListViewIds['Failed']])}" 
+                    target="ActivityMessages" style="color:red;text-decoration:none">Failed:</a></td>
+                <td id="failed_ctrl">{!Counts['failed']}</td>
+                <td width="40%" ></td><td width="30%"><a id="processed_link_ctrl" href="{!URLFOR($Page.Workforce2_ActivityMessagesPage,null,['fcf'=ListViewIds['Processed']])}" 
+                    target="ActivityMessages" style="color:green;text-decoration:none">Processed:</a></td>
+                <td id="processed_ctrl">{!Counts['processed']}</td>
+            </tr>
+        </tbody>
+    </table>
+    </apex:outputPanel>
+    <script>
+        function hideScroll()
+        {
+            document.body.style.overflow='hidden';
+        }
+        hideScroll();
+    </script>
+</apex:page>

@@ -1,0 +1,5 @@
+<apex:page standardController="Account">
+<apex:form >
+<apex:detail subject="{!account.Id}" relatedList="false" inlineEdit="true"/>
+</apex:form>
+</apex:page>

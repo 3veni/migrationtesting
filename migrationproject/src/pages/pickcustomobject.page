@@ -1,0 +1,13 @@
+<apex:page standardController="Position__c">
+    <apex:form >
+        <apex:pageBlock mode="edit">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Dependent Picklists" columns="2">
+            <apex:inputField value="{!Position__c.Functional_Area__c}"/>
+            <apex:inputField value="{!Position__c.Job_Level__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

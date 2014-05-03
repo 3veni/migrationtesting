@@ -1,0 +1,27 @@
+<apex:page Controller="Job2" >
+    <apex:form >
+    <apex:pageBlock title="job application"> 
+        <apex:pageBlockTable value="{!obj}" var="obj1">
+        <apex:column headerValue="camdidate name">
+         <apex:outputField value="{!obj1.name}" />
+        
+         </apex:column>
+          <apex:column headerValue="candidate">
+         
+         <apex:outputField value="{!obj1.Id}"/>
+        
+         </apex:column>
+          <apex:column headerValue="coverletter">
+        <apex:outputField value="{!obj1.Cover_Letter__c}"/>
+        </apex:column>
+         <apex:column headerValue="position">
+          <apex:outputField value="{!obj1.Position__c}"/>
+          </apex:column>
+           <apex:column headerValue="status">
+          <apex:outputField value="{!obj1.Status__c}"/>
+          </apex:column>
+        </apex:pageBlockTable>
+       
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

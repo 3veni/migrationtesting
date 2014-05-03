@@ -1,0 +1,36 @@
+<apex:page Controller="Pagenation">
+<script>
+ function cahngestyle(var a)
+{
+             alert('hai'+a);
+
+}
+</script>
+   <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!sublstAcc}" var="Accobj" id="ppt">   <!-- /* var el = document.getElementById('hai').value=a; alert('hai');*/ onclick="cahngestyle('(!i)')"-->
+          <apex:column headerValue="Account Name">
+                <apex:outputText value="{!Accobj.Name}"/> 
+                </apex:column>
+                <apex:column headerValue="Account Site" value="{!Accobj.Site}"/>
+                <apex:column headerValue="Phone"  value="{!Accobj.Phone}"/>
+                <apex:column headerValue="NumberOfEmployees" value="{!Accobj.NumberOfEmployees}"/>
+                             
+             </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:panelGrid columns="4">
+        
+            <apex:commandbutton value="First" action="{!First}" rendered="{!!FirstPageFlag}"/>
+            <apex:commandbutton value="<<Prev" action="{!Prev}" rendered="{!!PrevPageFlag}"/>
+            <apex:repeat value="{!ilist}" var="i">
+            <apex:commandlink id="hai" value="{!i}" action="{!lin}" style="{!IF(PageIndex == i,'color:red','color:black')}" >&nbsp;&nbsp;&nbsp;
+            <apex:param name="Isok"  value="{!i}"  assignto="{!Isok}">
+            </apex:param>
+            </apex:commandlink>
+            </apex:repeat>
+             <apex:commandbutton value=">>Next" action="{!Next}" rendered="{!NextPageFlag}" />
+              <apex:commandbutton value="Last" action="{!Last}" rendered="{!LastPageFlag}"/>
+         </apex:panelGrid>
+         
+    </apex:form>
+</apex:page>

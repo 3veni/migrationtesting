@@ -1,0 +1,175 @@
+<apex:page controller="ETAblack.Workforce2_SettingsMappingCtrl" 
+    title="{!IF($CurrentPage.parameters.id==null,$Label.etablack__New_AM_mapping_field,$Label.etablack__Edit_AM_mapping_field)}" id="thePage">
+    <!-- tabStyle="WorkforceTab__tab"  -->
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" language="JavaScript" type="text/javascript"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"/>
+    <script>
+        $(function() {
+            $( "#theMFMenu" ).html("<li><a href='#' id='theCurrentMessageField' class='TOAfieldLabel'></a><ul>{!JSENCODE(messageFieldsMenuHtml)}</ul></li>");
+            $( "#theMFMenu" ).menu();
+            $("#theMFMenu").css( "display","" );
+            messageFieldSelected("{!BLANKVALUE(newMappingItem.MessageField__c,'--None--')}");    
+            if('{!newMappingItem.ETAblack__MessageField__c}'!='')
+                $( "#theMFMenu" ).menu( "disable");            
+            
+            $( "#theLOFMenu" ).html("<li><a href='#' id='theCurrentField' class='TOAfieldLabel'></a><ul>{!JSENCODE(fieldsMenuHtml)}</ul></li>");
+            $( "#theLOFMenu" ).menu();
+            $("#theLOFMenu").css( "display","" );
+            $( "#theDCIMenu" ).html("<li><a href='#' id='theCurrentIdField' class='TOAfieldLabel'></a><ul>{!JSENCODE(idFieldsMenuHtml)}</ul></li>");
+            $( "#theDCIMenu" ).menu();
+            $("#theDCIMenu").css( "display","" );
+            fieldSelected("{!BLANKVALUE(newlinkedObjectField,'--None--')}");
+            idFieldSelected("{!BLANKVALUE(newlinkedDocFieldId,'--None--')}");
+            validateScreen("{!BLANKVALUE(newMappingItem.MappingMethod__c,'field')}");
+        });
+        function messageFieldSelected(name)
+        {
+            document.getElementById('theCurrentMessageField').innerHTML='<span class="ui-menu-icon ui-icon ui-icon-carat-1-e"></span>'+name;
+            document.getElementById('{!$Component.thePage:theForm:thePB:theMF:theMF:theMF}').value=name;
+        }
+        function fieldSelected(name)
+        {
+            document.getElementById('theCurrentField').innerHTML='<span class="ui-menu-icon ui-icon ui-icon-carat-1-e"></span>'+name;
+            document.getElementById('{!$Component.thePage:theForm:thePB:theMethod:theLOF:theLOF}').value=name;
+        }
+        function idFieldSelected(name)
+        {
+            document.getElementById('theCurrentIdField').innerHTML='<span class="ui-menu-icon ui-icon ui-icon-carat-1-e"></span>'+name;
+            document.getElementById('{!$Component.thePage:theForm:thePB:theMethod:theDCI:theDCI}').value=name;
+        }
+    </script>
+    <style>
+        .ui-menu {
+            width: auto;
+            min-width: 400px;
+            display:inline-block;
+            z-index: 50000000;
+        }
+        .theConstInput:disabled {
+            background-color:#fafafa;
+        }
+        .theConstInput {
+            width: auto;
+            min-width: 400px;
+            border-bottom-right-radius: 4px/*{cornerRadius}*/;
+            border-bottom-left-radius: 4px/*{cornerRadius}*/;
+            border-top-right-radius: 4px/*{cornerRadius}*/;
+            border-top-left-radius: 4px/*{cornerRadius}*/;
+            line-height: 2;
+            font-family: Verdana,Arial,sans-serif/*{ffDefault}*/;
+            font-size: 1.1em/*{fsDefault}*/;
+            border-collapse: separate;
+            border-spacing: 2px;
+        }
+        .TOAfieldLabel {
+            font-weight:bold !important;
+            color: #369 !important;
+            white-space: nowrap;
+        }
+    </style>
+    <apex:variable value="{!IF($CurrentPage.parameters.retURL==null,'/home/home.jsp',$CurrentPage.parameters.retURL)}" var="retURL" />
+    <apex:sectionHeader title="{!$Label.etablack__ProductName} v{!PackageVersion}"
+        subtitle="{!IF($CurrentPage.parameters.id==null,$Label.etablack__New_AM_mapping_field,$Label.etablack__Edit_AM_mapping_field)}" 
+        help="{!URLFOR($Page.ETAblack__Workforce2_HelpPage,null,['id'='MappingField'])}" />
+    <apex:pageMessages />
+    <apex:form id="theForm">
+        <apex:pageBlock mode="edit" id="thePB">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="{!IF($CurrentPage.parameters.id==null,$Label.etablack__Create,$Label.etablack__Save)}" style="padding:5px;" />
+                <apex:outputPanel onclick="document.location.href='{!retURL}';" styleClass="btn" style="padding:5px; text-decoration:none;vertical-align: middle">{!$Label.etablack__Cancel}</apex:outputPanel>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.fields.ETAblack__Direction__c.Label}" showHeader="true" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.fields.ETAblack__Direction__c.Label}" />
+                    <apex:outputPanel >
+                        <div class="requiredInput">
+                            <div class="requiredBlock"> </div>
+                            <apex:selectRadio value="{!newMappingItem.ETAblack__Direction__c}" required="true" layout="pageDirection" enabledClass="TOAfieldLabel" title="1">
+                                <apex:selectOption itemLabel="{!SUBSTITUTE($Label.etablack__Send_to,'{PN}',$Label.etablack__TOAproductName)}" itemValue="out" />
+                                <apex:selectOption itemLabel="{!SUBSTITUTE($Label.etablack__Retrieve_from,'{PN}',$Label.etablack__TOAproductName)}" itemValue="in" />
+                                <apex:selectOption itemLabel="{!SUBSTITUTE($Label.etablack__To_and_from,'{PN}',$Label.etablack__TOAproductName)}" itemValue="in,out" />
+                            </apex:selectRadio>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:variable value="{!RIGHT(URLFOR($Action.Workforce2_ActivityMessage__c.ChangeOwner,$ObjectType.ETAblack__Workforce2_ActivityMessage__c.KeyPrefix,null),15)}" var="amEnt" />
+            <apex:pageBlockSection title="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.fields.ETAblack__MessageField__c.Label}" showHeader="true" id="theMF" columns="1">
+                <apex:pageBlockSectionItem id="theMF">
+                    <apex:outputLabel value="{!$Label.etablack__AM_field_name}" />
+                    <apex:outputPanel >
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                            <input type="radio" name="type" style="visibility: hidden;" />
+                            <apex:inputHidden value="{!newMappingItem.ETAblack__MessageField__c}" id="theMF" />
+                            <ul id="theMFMenu" style="display:none;"></ul>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <script>
+                function validateScreen(method)
+                {
+                    document.getElementById('{!$Component.thePage:theForm:thePB:theMethodVar}').value=method;
+                    document.getElementById('theLOF').checked=false;
+                    $("#theLOFMenu").menu( "disable" );
+                    document.getElementById('theDCI').checked=false;
+                    $("#theDCIMenu").menu( "disable" );
+                    document.getElementById('theConst').checked=false;
+                    document.getElementById('{!$Component.thePage:theForm:thePB:theMethod:theConst:theConst}').disabled=true;
+                    switch(method)
+                    {
+                        case 'field':
+                            document.getElementById('theLOF').checked=true;
+                            $("#theLOFMenu").menu( "enable" );
+                            break;
+                        case 'content':
+                            document.getElementById('theDCI').checked=true;
+                            $("#theDCIMenu").menu( "enable" );
+                            break;
+                        case 'text':
+                            document.getElementById('theConst').checked=true;
+                            document.getElementById('{!$Component.thePage:theForm:thePB:theMethod:theConst:theConst}').disabled=false;
+                            break;
+                    }
+                }
+            </script>
+            <apex:inputHidden value="{!newMappingItem.ETAblack__MappingMethod__c}" id="theMethodVar" />
+            <apex:pageBlockSection title="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.fields.ETAblack__MappingMethod__c.Label}" showHeader="true" columns="1" id="theMethod">
+                <apex:pageBlockSectionItem id="theLOF">
+                    <apex:outputLabel value="{!SUBSTITUTE($Label.etablack__Field_value,'{ON}',$ObjectType[$CurrentPage.parameters.entity].Label)}" />
+                    <apex:outputPanel >
+                        <div class="requiredInput">
+                            <div class="requiredBlock"> </div>
+                            <input type="radio" name="type" id="theLOF" onchange="validateScreen('field')">
+                                <apex:inputHidden value="{!newlinkedObjectField}" id="theLOF" />
+                            <ul id="theLOFMenu" style="display:none;"></ul>
+                            </input>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="theDCI">
+                    <apex:outputLabel value="{!SUBSTITUTE($Label.etablack__Document_value,'{ON}',$ObjectType[$CurrentPage.parameters.entity].Label)}" id="theLDILabel" />
+                    <apex:outputPanel >
+                        <div class="requiredInput">
+                            <div class="requiredBlock"> </div>
+                            <input type="radio" name="type" id="theDCI" onchange="validateScreen('content')">
+                                <apex:inputHidden value="{!newlinkedDocFieldId}" id="theDCI" />
+                            <ul id="theDCIMenu" style="display:none;"></ul>
+                            </input>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="theConst">
+                    <apex:outputLabel value="{!$Label.etablack__Const_field}" />
+                    <apex:outputPanel >
+                            <input type="radio" name="type" id="theConst" onchange="validateScreen('text')">
+                                <apex:inputText id="theConst" value="{!newlinkedObjectConst}" label="text" styleClass="theConstInput TOAfieldLabel" />
+                            </input>
+                    </apex:outputPanel>                            
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,66 @@
+<apex:page controller="TOA.ETAworkforceDictionaryController" title="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.LabelPlural} {!$ObjectType.TOA__ETAworkforceNotification__c.Fields[$CurrentPage.parameters.dsfn].Label}" id="thePage" tabStyle="ETAworkforceTab__tab">
+   <apex:sectionHeader title="ETAworkforce v{!PackageVersion}" subtitle="{!$ObjectType.TOA__ETAworkforce_mapping_dictionary__c.LabelPlural} {!$ObjectType.TOA__ETAworkforceNotification__c.Fields[$CurrentPage.parameters.dsfn].Label}" />
+   <script src="{!URLFOR($Resource.TOAUtils)}" language="JavaScript" type="text/javascript"></script>
+    <apex:form id="theForm">
+        <apex:pageMessages id="theMesssages" />
+        <apex:pageBlock title="To ETAdirect" id="theOutgoingListBlock" >        
+            <apex:pageBlockButtons location="top">
+                <apex:commandLink action="{!add}" value="New" styleClass="btn" style="padding:5px; text-decoration:none;" >
+                    <apex:param name="outgoing" value="true"/>
+                </apex:commandLink>
+                <apex:outputPanel onclick="document.getElementById('theSelectObjectWnd').style.display='';"
+                    styleClass="btn" style="padding: 5px" rendered="{!IF(AddFromObjects.size!=0,'true','false')}">Add from...</apex:outputPanel>
+
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!mappingDictionary[0]}" var="dict" id="theDictFields">
+                <apex:column headerValue="Action" width="5%" styleClass="actionColumn">
+                    <apex:commandLink action="{!URLFOR($Action.TOA__ETAworkforce_mapping_dictionary__c.Delete,dict['Id'],['retURL'=$Page.ETAworkforceMappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" value="Delete" reRender="theOutgoingListBlock" styleClass="actionLink"/>
+                    |&nbsp;
+                    <apex:commandLink action="{!URLFOR($Page.ETAworkforceMappingDictionaryItemPage,dict['Id'],['Id'=dict['Id'],'reverse'='false','retURL'=$Page.ETAworkforceMappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" value="Edit" reRender="theOutgoingListBlock"  styleClass="actionLink"/>                
+                </apex:column>
+                <apex:column headerValue="Formula">
+                     <apex:outputText rendered="{!IF(dict['SourceFieldOldValue__c']==null,false,true)}"> "{!dict.SourceFieldOldValue__c}" => "{!dict.SourceFieldNewValue__c}" = "{!dict.DestinationFieldValue__c}"</apex:outputText>
+                     <apex:outputText rendered="{!IF(dict['SourceFieldOldValue__c']==null,true,false)}"> "{!dict.SourceFieldNewValue__c}" = "{!dict.DestinationFieldValue__c}"</apex:outputText>
+                 </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+
+
+        <apex:pageBlock title="From ETADirect" id="theIncomingListBlock" >        
+            <apex:pageBlockButtons location="top">
+                <apex:commandLink action="{!add}" value="New" styleClass="btn" style="padding:5px; text-decoration:none;" >
+                    <apex:param name="outgoing" value="false"/>
+                </apex:commandLink>
+                <apex:outputPanel onclick="document.getElementById('theSelectObjectWnd').style.display='';"
+                    styleClass="btn" style="padding: 5px" rendered="{!IF(AddFromObjects.size!=0,'true','false')}">Add from...</apex:outputPanel>
+
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!mappingDictionary[1]}" var="dict" id="theDictFields">
+                <apex:column headerValue="Action" width="5%" styleClass="actionColumn">
+                    <apex:commandLink action="{!URLFOR($Action.TOA__ETAworkforce_mapping_dictionary__c.Delete,dict['Id'],['retURL'=$Page.ETAworkforceMappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" value="Delete" reRender="theIncomingListBlock" styleClass="actionLink"/>
+                    |&nbsp;
+                    <apex:commandLink action="{!URLFOR($Page.ETAworkforceMappingDictionaryItemPage,dict['Id'],['Id'=dict['Id'],'reverse'='false','retURL'=$Page.ETAworkforceMappingDictionaryPage&'?dsfn='&$CurrentPage.parameters.dsfn&'&objname='&$CurrentPage.parameters.objname])}" value="Edit" reRender="theIncomingListBlock"  styleClass="actionLink"/>                
+                </apex:column>
+                <apex:column headerValue="Formula">
+                     <apex:outputText rendered="{!dict.SourceFieldOldValue__c==null}">"{!dict.SourceFieldNewValue__c}" = "{!dict.DestinationFieldValue__c}"</apex:outputText>
+                 </apex:column>
+            </apex:pageBlockTable>
+            <div style="position: absolute;top: 40%;left: 40%;width: 20%;margin: auto 0;display:none" id="theSelectObjectWnd">
+            <apex:pageBlock title="Add from">
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandLink action="{!addFrom}" value="Ok" styleClass="btn" style="padding:5px; text-decoration:none;"/>
+                    <apex:outputPanel onclick="document.getElementById('theSelectObjectWnd').style.display='none';"
+                    styleClass="btn" style="padding: 5px;width:60px;">Cancel</apex:outputPanel>
+                </apex:pageBlockButtons>
+
+                <apex:pageBlockSection columns="1">
+                    <apex:selectList value="{!addFromObject}" size="5" style="width:100%">
+                        <apex:selectOptions value="{!addFromObjects}"/>
+                    </apex:selectList>
+                    <br/>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            </div>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

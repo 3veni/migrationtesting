@@ -1,0 +1,15 @@
+<apex:page controller="TOA.ETAworkforceNotificationsController"
+    title="ETAworkforce {!$ObjectType.TOA__ETAworkforceNotification__c.Label} List" id="thePage" action="{!doAction}" tabStyle="ETAworkforceTab__tab" setup="false">
+   <apex:sectionHeader title="ETAworkforce v{!PackageVersion}" subtitle="{!$ObjectType.TOA__ETAworkforceNotification__c.Label} List" />
+   <script src="{!URLFOR($Resource.TOAUtils)}" language="JavaScript" type="text/javascript"></script>
+    <script type="text/javascript">
+    setCookie('sid_sidebar','{!GETSESSIONID()}');
+</script>
+    <apex:PageBlock mode="maindetail" id="thePageBlock">
+        <script src="{!URLFOR($Resource.jqueryui,'jquery-1.6.4.js')}"></script>
+        <apex:PageMessages />
+        <c:ETAworkforceNotificationsList status="{!$CurrentPage.parameters.status}"
+            unread="{!$CurrentPage.parameters.unread}"
+            parentId="{!$CurrentPage.parameters.parentId}" />
+    </apex:PageBlock>
+</apex:page>

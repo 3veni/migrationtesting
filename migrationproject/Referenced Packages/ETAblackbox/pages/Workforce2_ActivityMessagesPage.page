@@ -1,0 +1,10 @@
+<apex:page title="{!$Label.etablack__ProductName} {!$ObjectType.ETAblack__Workforce2_ActivityMessage__c.Label}" 
+        id="thePage"
+     
+        setup="false">
+    <apex:PageBlock mode="maindetail" id="thePageBlock">
+        <apex:PageMessages />
+        <apex:enhancedList type="Workforce2_ActivityMessage__c" height="300" rowsPerPage="25" customizable="true" />
+    </apex:PageBlock>
+</apex:page>
+<!-- tabStyle="WorkforceTab__tab"  -->

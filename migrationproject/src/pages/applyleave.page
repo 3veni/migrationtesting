@@ -1,0 +1,85 @@
+<apex:page controller="applyleavectrl" sidebar="false" showHeader="false">
+  <apex:form >
+  <style type="text/css">
+  .buttong2y:hover {
+                       background:white ;
+            font-size:10px;
+            font-weight:bold;
+            color:red
+            }
+            #container{width:100%;}
+            #upleft { 
+   width:100px; 
+   height: 300px; 
+   background:red; float:left; 
+}
+ #upleft1 { 
+   width:100px; 
+   height: 300px; 
+   background:pink; float:left; 
+}
+
+#upright { 
+   width:300px; 
+   height:200px; 
+   background:blue; 
+   float:left
+}
+#below { 
+   height:100px; 
+   width:400px; 
+   background:green;
+   float:left
+}
+#left{float:left;width:80px;height:300px;padding:80px;}
+#right{float:right;width:80px;height:300px;}
+#upcenter{margin:0 auto;width:700px;height:300px;}
+  </style>
+    <apex:pageMessages />
+   
+   
+        
+    <div  style="background-color:#C0F7FE;height:30px;color:white;font-family: Arial Black; font-size: 24px;" >
+     <div id="upcenter">
+     <center>
+     <b>Leave Management</b>
+     </center>
+     </div>
+    </div>
+ 
+ <div>
+      <div style="background-image:url('{!$Resource.Rachika_WaterMark}');height: 8000px; width: 1000px;background-attachment:fixed;background-repeat:no-repeat;background-position:center; font-family: Arial white" rendered="{!showapply}"> 
+                    <center>  <apex:outputtext value="Enter Employee Id:" style="font-size:18px;font-weight:bold;"/> &nbsp;&nbsp;                                    <apex:inputtext value="{!eid}"/>&nbsp;&nbsp;&nbsp;
+              <apex:commandButton value="Ok" action="{!ok}"  styleclass="buttong2y"/><br/>
+              <apex:outputlabel value="{!ermsg}" style="font-size:15px;font-weight:bold;color:red"/>
+          </center>
+                               <apex:pageblock rendered="{!showapply}"> 
+    <center  >
+      <b>Employee name:</b>{!emp.Com_First_Name__c}&nbsp;{!emp.Com_Last_Name__c}
+      </center>
+      <center>
+          <apex:outputfield value="{!emp.Com_Balance_Leaves__c}"/>
+          <apex:outputfield value="{!emp.Com_First_Name__c}"/>
+          <apex:inputfield value="{!leave.Com_From_Date__c}"/>
+          <apex:inputfield value="{!leave.Com_To_Date__c}"/>
+          <apex:outputfield value="{!leave.Com_Employee_id__c}"/>
+         <b>Leave type</b><apex:selectList value="{!selectpick}"> <apex:selectOptions value="{!items}"/>  </apex:selectList> 
+         <apex:commandbutton value="Ok" action="{!addleave}"/>
+         
+              </center>
+              <apex:pageblocktable value="{!leavelist1}" var="lea">
+              <apex:column >
+              <apex:outputfield value="{!lea.Com_Employee_id__c}"/>
+              <apex:outputfield value="{!lea.Com_From_Date__c}"/>
+              <apex:outputfield value="{!lea.Com_To_Date__c}"/>
+
+              </apex:column>
+              </apex:pageblocktable>
+         </apex:pageblock>
+     </div>
+     </div>
+     
+
+                       
+  </apex:form>
+ </apex:page>

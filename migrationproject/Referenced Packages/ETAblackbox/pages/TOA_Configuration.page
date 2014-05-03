@@ -1,0 +1,296 @@
+<apex:page controller="ETAblack.TOAConfigurationController" setup="true" tabStyle="TOA_Configuration__tab" action="{!createOrg}">
+    <script type="text/javascript">
+        function confirmDelete()
+        {
+            if(!confirm('Are you sure?'))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    </script>
+    <apex:form >
+        <apex:sectionHeader title="TOA Configuration Screen" subtitle="Current Org Settings"/>
+        <apex:pageBlock >
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Edit" action="{!editOrg}" rendered="{!isDetail}"/>
+                <apex:commandButton value="Save" action="{!saveOrg}" rendered="{!NOT(isDetail)}"/>
+                <apex:commandButton value="Cancel" action="{!cancelOrg}" rendered="{!NOT(isDetail)}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Name" for="name"/>
+                    <apex:outputPanel id="name">
+                        <apex:outputField value="{!org.Name}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.Name}" rendered="{!NOT(isDetail)}" required="true"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" title="ETAdirect Settings">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Company" for="company"/>
+                    <apex:outputPanel id="company">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectCompany__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectCompany__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>                   
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Resource Endpoint" for="rep"/>
+                    <apex:outputPanel id="rep">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectResourceEndpoint__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectResourceEndpoint__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="User" for="user"/>
+                    <apex:outputPanel id="user">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectUser__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectUser__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Capacity Endpoint" for="cep"/>
+                    <apex:outputPanel id="cep">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectCapacityEndpoint__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectCapacityEndpoint__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Password" for="password"/>
+                    <apex:outputPanel id="password">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectPassword__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectPassword__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Activity Endpoint" for="aep"/>
+                    <apex:outputPanel id="aep">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectActivityEndpoint__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectActivityEndpoint__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" title="ETAdirect Defaults">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default Display Profile" for="ddp"/>
+                    <apex:outputPanel id="ddp">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectDefaultDisplayProfile__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectDefaultDisplayProfile__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default Login Policy" for="dlp"/>
+                    <apex:outputPanel id="dlp">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectDefaultLoginPolicy__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectDefaultLoginPolicy__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default Password" for="dp"/>
+                    <apex:outputPanel id="dp">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectDefaultPassword__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectDefaultPassword__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default Profile" for="dProfile"/>
+                    <apex:outputPanel id="dProfile">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectDefaultProfile__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectDefaultProfile__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default Time Zone" for="dtz"/>
+                    <apex:outputPanel id="dtz">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectDefaultTimeZone__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectDefaultTimeZone__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <br />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default Language" for="language"/>
+                    <apex:outputPanel id="language">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectDefaultLanguage__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectDefaultLanguage__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Default Resource Type" for="dut"/>
+                    <apex:outputPanel id="dut">
+                        <apex:outputField value="{!org.ETAblack__ETAdirectDefaultResourceType__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__ETAdirectDefaultResourceType__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" title="Salesforce.com Settings">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Is Site?" for="site"/>
+                    <apex:outputPanel id="site">
+                        <apex:outputField value="{!org.ETAblack__Is_Site__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__Is_Site__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Technician Object" for="technicianObject"/>
+                    <apex:outputPanel id="technicianObject">
+                        <apex:outputField value="{!org.ETAblack__Technician_Object__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__Technician_Object__c}" rendered="{!NOT(isDetail)}" required="true"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Server Number" for="serverNumber"/>
+                    <apex:outputPanel id="serverNumber">
+                        <apex:outputField value="{!org.ETAblack__Server_Number__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__Server_Number__c}" rendered="{!NOT(isDetail)}" required="true"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Case Object" for="caseObject"/>
+                    <apex:outputPanel id="caseObject">
+                        <apex:outputField value="{!org.ETAblack__Case_Object__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__Case_Object__c}" rendered="{!NOT(isDetail)}" required="true"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Server Name" for="serverName"/>
+                    <apex:outputPanel id="serverName">
+                        <apex:outputField value="{!org.ETAblack__Server_Name__c}" rendered="{!isDetail}"/>
+                        <apex:inputfield value="{!org.ETAblack__Server_Name__c}" rendered="{!NOT(isDetail)}" required="true"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Require Technician?" for="requireTechnician"/>
+                    <apex:outputPanel id="requireTechnician">
+                        <apex:outputField value="{!org.ETAblack__Require_Technician__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__Require_Technician__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <br />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Require Appointment Date?" for="requireAppointmentDate"/>
+                    <apex:outputPanel id="requireAppointmentDate">
+                        <apex:outputField value="{!org.ETAblack__Require_Appointment_Date__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!org.ETAblack__Require_Appointment_Date__c}" rendered="{!NOT(isDetail)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="Countries" rendered="{!isDetail}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="New" action="/apex/ETAblack__TOA_Edit_Country?countryId=&detail=false"/>
+            </apex:pageBlockButtons>
+            <table class="list" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr class="headerRow">
+                        <th width="6%;" class="actionColumn" scope="col">Action</th>
+                        <th width="35%">Name</th>
+                        <th width="35%">Parent ID</th>
+                        <th width="10%">Country Code</th>
+                        <th width="10%">Default?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!Countries}" var="item" rendered="{!Countries.size > 0}">
+                        <tr class="dataRow" onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+                            <td class="actionColumn">
+                                <a href="/apex/ETAblack__TOA_Edit_Country?countryId={!item.Id}&detail=false" class="actionLink">Edit</a>
+                                <apex:outputText value=" | "/>
+                                <apex:commandLink value="Del" action="{!deleteCountry}" styleClass="actionLink" onclick="return confirmDelete();">
+                                    <apex:param value="{!item.Id}" name="countryId"/>
+                                </apex:commandLink>
+                            </td>
+                            <td class="dataCell"><a href="/apex/ETAblack__TOA_Edit_Country?countryId={!item.Id}&detail=true"><apex:outputText value="{!item.Name}"/></a></td>
+                            <td class="dataCell"><apex:outputField value="{!item.ETAblack__Parent_ID__c}"/></td>
+                            <td class="dataCell"><apex:outputText value="{!item.ETAblack__Country_Code__c}"/></td>
+                            <td class="dataCell"><apex:outputField value="{!item.ETAblack__Default__c}"/></td>
+                        </tr>
+                    </apex:repeat>
+                    <apex:outputText rendered="{!Countries.size == 0}">
+                        <tr>
+                            <td colspan="5">No records to display.</td>
+                        </tr>
+                    </apex:outputText>
+                </tbody>
+            </table>
+        </apex:pageBlock>
+        <apex:pageBlock title="Skills" rendered="{!isDetail}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="New" action="/apex/ETAblack__TOA_Edit_Skills?skillId=&detail=false"/>
+            </apex:pageBlockButtons>
+            <table class="list" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr class="headerRow">
+                        <th width="6%;" class="actionColumn" scope="col">Action</th>
+                        <th width="20%">Name</th>
+                        <th width="20%">Average</th>
+                        <th width="10%">Excellent</th>
+                        <th width="10%">Good</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!Skills}" var="item" rendered="{!Skills.size > 0}">
+                        <tr class="dataRow" onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+                            <td class="actionColumn">
+                                <a href="/apex/ETAblack__TOA_Edit_Skills?SkillId={!item.Id}&detail=false" class="actionLink">Edit</a>
+                                <apex:outputText value=" | "/>
+                                <apex:commandLink value="Del" action="{!deleteSkill}" styleClass="actionLink" onclick="return confirmDelete();">
+                                    <apex:param value="{!item.Id}" name="SkillId"/>
+                                </apex:commandLink>
+                            </td>
+                            <td class="dataCell"><a href="/apex/ETAblack__TOA_Edit_Skills?languageId={!item.Id}&detail=true"><apex:outputText value="{!item.Name}"/></a></td>
+                            <td class="dataCell"><apex:outputField value="{!item.ETAblack__Average__c}"/></td>
+                            <td class="dataCell"><apex:outputText value="{!item.ETAblack__Excellent__c}"/></td>
+                            <td class="dataCell"><apex:outputField value="{!item.ETAblack__Good__c}"/></td>
+                        </tr>
+                    </apex:repeat>
+                    <apex:outputText rendered="{!Skills.size == 0}">
+                        <tr>
+                            <td colspan="5">No records to display.</td>
+                        </tr>
+                    </apex:outputText>
+                </tbody>
+            </table>
+        </apex:pageBlock>
+        <apex:pageBlock title="Time Slots" rendered="{!isDetail}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="New" action="/apex/ETAblack__TOA_Edit_TimeSlot?timeSlotId=&detail=false"/>
+            </apex:pageBlockButtons>
+            <table class="list" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr class="headerRow">
+                        <th width="6%;" class="actionColumn" scope="col">Action</th>
+                        <th width="20%">Name</th>
+                        <th width="20%">Name</th>
+                        <th width="20%">Time Slot Label</th>
+                        <th width="10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!TimeSlots}" var="item" rendered="{!TimeSlots.size > 0}">
+                        <tr class="dataRow" onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+                            <td class="actionColumn">
+                                <a href="/apex/ETAblack__TOA_Edit_TimeSlot?timeSlotId={!item.Id}&detail=false" class="actionLink">Edit</a>
+                                <apex:outputText value=" | "/>
+                                <apex:commandLink value="Del" action="{!deleteTimeSlot}" styleClass="actionLink" onclick="return confirmDelete();">
+                                    <apex:param value="{!item.Id}" name="timeSlotId"/>
+                                </apex:commandLink>
+                            </td>
+                            <td class="dataCell"><a href="/apex/ETAblack__TOA_Edit_TimeSlot?timeSlotId={!item.Id}&detail=true"><apex:outputText value="{!item.Name}"/></a></td>
+                            <td class="dataCell"><apex:outputField value="{!item.ETAblack__Name__c}"/></td>
+                            <td class="dataCell"><apex:outputText value="{!item.ETAblack__Time_Slot_Label__c}"/></td>
+                            <td class="dataCell"><apex:outputField value="{!item.ETAblack__Status__c}"/></td>
+                        </tr>
+                    </apex:repeat>
+                    <apex:outputText rendered="{!TimeSlots.size == 0}">
+                        <tr>
+                            <td colspan="5">No records to display.</td>
+                        </tr>
+                    </apex:outputText>
+                </tbody>
+            </table>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

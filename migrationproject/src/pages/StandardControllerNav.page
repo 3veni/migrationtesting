@@ -1,0 +1,13 @@
+<apex:page standardController="Job_Applicaton__c" recordSetVar="Job_Applicaton__c">
+   <apex:form >
+       <apex:pageBlock >
+           <apex:pageBlockTable value="{!Job_Applicaton__c}" var="a" >
+              <apex:column value="{!a.id}"/>
+              <apex:column value="{!a.name}"/>
+              <apex:column value="{!a.Status__c}"/>
+           </apex:pageBlockTable>
+           <apex:commandButton value="prev" action="{!previous}"/>
+           <apex:commandButton value="next" action="{!next}"/>
+       </apex:pageBlock>
+    </apex:form>
+</apex:page>

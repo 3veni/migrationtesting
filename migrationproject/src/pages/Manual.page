@@ -1,0 +1,37 @@
+<apex:page Controller="ManuvalPageControll">
+   <apex:form >
+        <apex:pageBlock >
+            <apex:inputText value="{!a1.num1__c}" title="Total No Of Records">
+            </apex:inputText>
+                     <apex:commandButton value="Submit" action="{!submit}" rendered="{!!b1}" style="margin-left:10px" />
+                       
+            <apex:pageBlockTable value="{!lstAcc1}" var="Accobj" id="ppt">
+                <apex:column value="{!mappingIndex[Accobj.id]}" headerValue="Index"/>
+                <apex:column headerValue="Account Name">
+                <apex:outputText value="{!Accobj.Name}"/> 
+                </apex:column>
+                <apex:column headerValue="Account Site" value="{!Accobj.Site}"/>
+                <apex:column headerValue="Phone"  value="{!Accobj.Phone}"/>
+                <apex:column headerValue="NumberOfEmployees" value="{!Accobj.NumberOfEmployees}"/>
+                
+             </apex:pageBlockTable>
+        </apex:pageBlock>
+       <apex:outputText value="{!pageinfo}" />
+        <apex:panelGrid columns="4">
+            <apex:commandButton value="First" action="{!First}" rendered="{!!FirstPageFlag}">
+                 <apex:param value="{!PageIndex }" assignTo="{!Isok}"/>
+                 
+            </apex:commandButton>
+            <apex:commandButton value="Last" action="{!Last}" rendered="{!LastPageFlag}"> 
+                <apex:param value="{!PageIndex}" assignTo="{!Isok}"/>
+            </apex:commandButton>
+             <apex:commandButton value="Next" action="{!Next}" rendered="{!NextPageFlag}" > 
+                <apex:param value="{!PageIndex}" assignTo="{!Isok}"/>
+            </apex:commandButton>
+            <apex:commandButton value="Prev" action="{!Prev}" rendered="{!!PrevPageFlag}">
+                <apex:param value="{!PageIndex}" assignTo="{!Isok}"/>
+            </apex:commandButton>
+         </apex:panelGrid>
+         
+    </apex:form>
+</apex:page>

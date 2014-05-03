@@ -1,0 +1,13 @@
+<apex:page controller="SaveName">
+  <apex:form >
+  <apex:pageBlock >
+  <apex:outputLabel >name</apex:outputLabel> 
+    <apex:inputText value="{!a1.Hello__c}"/>
+  <apex:commandButton value="save" action="{!save}"/>
+  <apex:commandButton value="cancle" action="{!Cancle}"/>
+  
+<apex:commandButton value="Edit" action="{!Edit}"/>
+
+   </apex:pageBlock>
+  </apex:form>
+</apex:page>

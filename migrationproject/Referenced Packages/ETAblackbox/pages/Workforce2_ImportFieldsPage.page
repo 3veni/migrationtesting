@@ -1,0 +1,212 @@
+<apex:page controller="ETAblack.Workforce2_SettingsMappingCtrl" title="Import {!$ObjectType.ETAblack__Workforce2_ActivityMessage__c.Label} mapping field" id="thePage">
+<!-- tabStyle="WorkforceTab__tab"  -->
+    <apex:variable value="{!IF($CurrentPage.parameters.retURL==null,'/home/home.jsp',$CurrentPage.parameters.retURL)}" var="retURL" />
+    <apex:sectionHeader title="{!$Label.etablack__ProductName} v{!PackageVersion}"
+        subtitle="{!$Label.etablack__Import_mapping_fields}" help="{!URLFOR($Page.ETAblack__Workforce2_HelpPage,null,['id'='ImportMappingField'])}" />
+    
+    <img src="/img/loading.gif" style="visibility:hidden" id="mappingProcessIcon"/>
+    <style type="text/css">
+           span.propertyRowLabel
+           {
+               font-weight:bold;
+               color:DarkBlue;
+           }
+           span.propertyRowName
+           {
+               font-weight:bold;
+               color:Gray;
+           }
+           tr.hiddenRow
+           {
+               display:none;
+           }
+           tr.visibleRow
+           {
+               display:'';
+           }
+    </style>
+    <script src="/soap/ajax/23.0/connection.js" language="JavaScript" type="text/javascript"></script>
+                    <!-- MIT license or GPLv3 - http://stuk.github.com/jszip/ -->
+    <script src="{!URLFOR($Resource.jszip,'/Stuk-jszip-e45a4d7/jszip.js')}" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jszip,'/Stuk-jszip-e45a4d7/jszip-load.js')}" language="JavaScript" type="text/javascript"></script>
+    
+    <script>
+    var timeout_id=null;
+    function onFilter()
+    {
+        if(timeout_id!=null)
+            clearTimeout(timeout_id);
+        timeout_id = window.setTimeout(activateFilter,500);
+    }
+    function activateFilter()
+    {
+ 
+        timeout_id=null;
+        var value=document.getElementById('setupSearch').value.toLocaleLowerCase();
+        var node='{!$Component.thePage.theForm.thePB.thePBS.thePBSI.thePBCB}';
+        var txt='';
+        var onlyStarts=document.getElementById('{!$Component.thePage.theForm.thePB.thePBS.thePBBSI.theOnlyStarts}').checked;
+        for(var i=0;i<{!ETAdirectProperties.size};++i)
+        {
+            var ctrl=document.getElementById(node+':'+i);
+            if(value=='')
+            {
+                ctrl.parentElement.parentElement.className="visibleRow";
+                continue;
+            }
+            if(onlyStarts==true && ctrl.value.toLocaleLowerCase().lastIndexOf(value)==0)
+            {
+                ctrl.parentElement.parentElement.className="visibleRow";
+            }
+            else
+                if(onlyStarts==false && ctrl.value.toLocaleLowerCase().lastIndexOf(value)!=-1)
+                {
+                    ctrl.parentElement.parentElement.className="visibleRow";
+                }
+            else
+                ctrl.parentElement.parentElement.className="hiddenRow";
+
+        }
+        
+    }
+    
+    function checkDeployStatus(id)
+    {
+        sforce.connection.init( '{!GETSESSIONID()}', "/services/Soap/m/25.0" );
+        try
+        {
+           var arg = new sforce.internal.Parameter( "asyncProcessId", [id], true );
+           var queryResult = sforce.connection._invoke( "checkDeployStatus", [arg], true, null,
+                       [{ns:'http://soap.sforce.com/2006/04/metadata', prefix:null},
+                        {ns:'http://soap.sforce.com/2006/04/metadata', prefix:"met"}],
+                             sforce.connection.serverUrl,
+                             'http://soap.sforce.com/2006/04/metadata',
+                             'http://soap.sforce.com/2006/04/metadata' )
+           if ( queryResult[0].getBoolean("success")!=true )
+           {
+              if(queryResult[0].messages instanceof Array)
+                  alert('Deploy error: '+queryResult[0].messages[0].problem);
+              else
+                  alert('Deploy error: '+queryResult[0].messages.problem);
+              return -1;
+           }
+           return 0;
+        }
+        catch ( exc )
+        {
+           if(exc.faultstring.indexOf('InProgress')!=-1)
+               return 1;
+           alert('Deploy error:' + ( exc.faultstring || exc ));
+        }
+        return -1;
+    }
+    function isEmpty(obj) 
+    {
+        if (typeof obj == 'undefined' || obj === null || obj === '') return true;
+        if (typeof obj == 'number' && isNaN(obj)) return true;
+        if (obj instanceof Date && isNaN(Number(obj))) return true;
+        return false;
+    }
+    function importSelectedFields()
+    {
+        document.getElementById('mappingProcessIcon').style.visibility='visible'
+        var node='{!$Component.thePage.theForm.thePB.thePBS.thePBSI.thePBCB}';
+        var fieldsMap={!allETAdirectPropertiesJSON};
+        var package_xml='<?xml version="1.0" encoding="UTF-8"?><Package xmlns="http://soap.sforce.com/2006/04/metadata">'+
+                                   '<types><name>CustomField</name>';
+        var activity_message_object='<?xml version="1.0" encoding="UTF-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">';
+        for(var i=0;i<{!ETAdirectProperties.size};++i)
+        {
+            var ctrl=document.getElementById(node+':'+i);
+            if(ctrl.checked)
+            {
+                var field=fieldsMap[ctrl.value];
+                package_xml+='<members>{!$ObjectType.Workforce2_ActivityMessage__c.Name}.'+ctrl.value+'__c</members>';
+                activity_message_object+='<fields><externalId>false</externalId><trackHistory>false</trackHistory><required>false</required><unique>false</unique>'
+                                        +'<fullName>'+ctrl.value+'__c</fullName>';
+                activity_message_object+='<label>'+field['pdname']+'</label>';     
+                if(!isEmpty(field['pdvalues']))
+                {
+                    activity_message_object+='<type>Picklist</type><picklist><sorted>true</sorted>'
+                    for (var ind in field['pdvalues'])
+                    {
+                        activity_message_object+='<picklistValues><fullName>'+field['pdvalues'][ind]+'</fullName><default>false</default></picklistValues>';
+                    }
+                    activity_message_object+='</picklist>'
+                }else
+                {
+                    activity_message_object+='<length>255</length><type>Text</type>';
+                }
+                
+                activity_message_object+='</fields>';
+            }
+        }
+        activity_message_object+='</CustomObject>';
+        
+        package_xml+='</types><version>22.0</version></Package>';
+        var jsz=new JSZip();
+        jsz.folder('unpackaged').file('package.xml',package_xml);
+        jsz.folder('unpackaged').folder('objects').file('{!$ObjectType.Workforce2_ActivityMessage__c.Name}.object',activity_message_object);
+        
+        sforce.connection.init( '{!GETSESSIONID()}', "/services/Soap/m/25.0" );
+        try
+        {
+           var arg = new sforce.internal.Parameter( "ZipFile", [jsz.generate()], true );
+           var queryResult = sforce.connection._invoke( "deploy", [arg], true, null,
+                       [{ns:'http://soap.sforce.com/2006/04/metadata', prefix:null},
+                        {ns:'http://soap.sforce.com/2006/04/metadata', prefix:"met"}],
+                             sforce.connection.serverUrl,
+                             'http://soap.sforce.com/2006/04/metadata',
+                             'http://soap.sforce.com/2006/04/metadata' )
+           var id=queryResult[0]["id"];
+           if ( id=='' || id==undefined || id==null )
+           {
+              alert('Deploy error: '+queryResult[0].toString());
+              return false;
+           }
+           for(var i=0;i<30;i++)
+           {
+              if(checkDeployStatus(id)<0)
+                  return false;
+              if(checkDeployStatus(id)==0)
+              {
+                  return true;
+              }
+           }
+           alert('{!JSENCODE($Label.Deploy_error_too_long)}');
+        }
+        catch ( exc )
+        {
+           alert('{!JSENCODE($Label.Deploy_error)}' + ( exc.faultstring || exc ));
+        }
+        return false;
+    }
+    </script>
+    <apex:form id="theForm">
+        <apex:pageMessages id="theMessages"/>
+        <apex:pageBlock mode="edit" id="thePB">
+            <apex:pageBlockButtons >
+                <apex:outputPanel onclick="if(importSelectedFields()) {document.location.replace('{!retURL}?nonce='+new Date().getTime());}document.getElementById('mappingProcessIcon').style.visibility='hidden';"  
+                    styleClass="btn" style="padding:5px; text-decoration:none;vertical-align: middle">{!$Label.etablack__Import}</apex:outputPanel>                
+                <apex:outputPanel onclick="document.location.href='{!retURL}';" styleClass="btn" 
+                    style="padding:5px; text-decoration:none;vertical-align: middle">{!$Label.etablack__Cancel}</apex:outputPanel>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.etablack__TOA_fields_label}" showHeader="true" columns="1" id="thePBS">
+            <apex:pageBlockSectionItem dataStyleClass="quickfindContainer" id="thePBBSI">
+                <apex:outputLabel value="{!$Label.etablack__Filter}"/>
+                <apex:outputPanel >
+                <input class="quickfindInput ghostText" id="setupSearch" maxlength="80" 
+                    name="setupSearch" size="20" type="text" oninput="onFilter(this.value);"/>
+                <apex:inputCheckbox id="theOnlyStarts" onchange="onFilter(null);">{!$Label.etablack__At_start}</apex:inputCheckbox>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="thePBSI">
+                    <apex:outputLabel value="{!$Label.etablack__TOA_fields_label}"/>                
+                    <apex:selectCheckboxes layout="pageDirection" id="thePBCB">
+                        <apex:selectOptions value="{!ETAdirectProperties}"/>
+                    </apex:selectCheckboxes>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

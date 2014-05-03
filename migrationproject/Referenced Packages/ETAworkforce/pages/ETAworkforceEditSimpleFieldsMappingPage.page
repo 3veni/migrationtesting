@@ -1,0 +1,136 @@
+<apex:page controller="TOA.ETAworkforceEditSimpleMappingController"
+title="ETAworkforce Settings Edit" id="thePage" 
+        setup="{!IF($CurrentPage.parameters.setup=="true",true,false)}"  
+        sidebar="{!IF($CurrentPage.parameters.sidebar=="false",false,true)}" 
+        tabStyle="ETAworkforceTab__tab" 
+        deferLastCommandUntilReady="true">
+    <apex:sectionHeader title="ETAworkforce v{!PackageVersion}" subtitle="Edit simple mapping {!$CurrentPage.parameters.objname}" help="{!$Page.TOA__ETAworkforceSettingsHelpPage}"/>
+    <script src="/soap/ajax/23.0/connection.js" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jqueryui,'jquery-1.6.4.js')}" language="JavaScript" type="text/javascript"></script>
+    <link rel="stylesheet"
+        href="{!URLFOR($Resource.jqueryui,'/themes/base/jquery.ui.all.css')}"
+        title="ui-theme" />
+    <link rel="stylesheet"
+        href="{!URLFOR($Resource.jqueryui,'/themes/overcast/jquery.ui.all.css')}"
+        title="ui-theme" />
+    <script src="{!URLFOR($Resource.jqueryui,'jquery.ui.core.js')}" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jqueryui,'jquery.ui.widget.js')}" language="JavaScript" type="text/javascript"></script>
+
+    <script src="{!URLFOR($Resource.jqueryui,'jquery.ui.position.js')}" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jqueryui,'jquery.ui.button.js')}" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jqueryui,'jquery.ui.menu.js')}" language="JavaScript" type="text/javascript"></script>
+
+    <script src="{!URLFOR($Resource.jquerypopup)}" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.TOAUtils)}" language="JavaScript" type="text/javascript"></script>
+    <script type="text/javascript">
+        var localAdvanced={!mappingAdvancedMode};//{!mappingAdvancedMode} - {!$CurrentPage.parameters.advanced}
+        function UpdateSimpleMappingDisplay()
+        {
+            $('.AdvancedMode').css('display',(localAdvanced?'':'none'));
+            document.getElementById('{!$Component.thePage.theForm.theBlock.theSimpleFields}').style.visibility='visible';
+        }
+
+        $(document).ready(function()
+        {
+            buildMenu(menuHtml);
+            UpdateSimpleMappingDisplay();
+        });
+            
+    </script>
+
+    <style type="text/css">
+.fieldButton {
+    width: 100%;
+}
+
+.ui-popup {
+    position: absolute;
+    z-index: 5000;
+}
+
+.ui-menu {
+    width: auto;
+    min-width: 400px
+}
+
+.ui-widget {
+    font: inherit;
+}
+
+.ui-widget-content {
+    background: white;
+}
+
+.ui-button {
+    text-align: left;
+}
+</style>
+
+    <apex:form id="theForm">
+
+        <apex:PageBlock mode="maindetail" id="theBlock">
+           <ul id="theMenu"></ul>
+           <script type="text/javascript">
+               var menuHtml="{!JSENCODE(menuHtml)}";
+               getNotificationObjectId('{!GETSESSIONID()}',['TOA__ETAworkforceNotification__c','{!JSENCODE(mappingObjectType)}']);    
+           </script>
+           <apex:inputHidden value="{!mappingAdvancedMode}" id="theHiddenAdvancedMode" />
+                            
+           <apex:outputText >* - Mandatory field</apex:outputText>
+           <apex:pageBlockButtons >
+              <img src="/img/loading.gif" style="visibility:hidden" id="mappingProcessIcon"/>
+              <apex:actionStatus id="mappingStatus"
+                 onstart="document.getElementById('mappingProcessIcon').style.visibility='visible'" onstop="document.getElementById('mappingProcessIcon').style.visibility='hidden';UpdateSimpleMappingDisplay();">
+              </apex:actionStatus>
+              <apex:commandButton action="{!save}" styleClass="btn" style="padding:5px;" value="Save" status="mappingStatus"/>
+              <apex:commandButton action="{!quicksave}" styleClass="btn" style="padding:5px;" value="Quick Save" status="mappingStatus"/>
+              <apex:outputPanel onclick="openNewFieldWindow(this,'{!JSENCODE(mappingObjectType)}','_AddMainObjectField');" styleClass="btn" style="padding:5px;">Add {!$ObjectType[mappingObjectType].Label} field...</apex:outputPanel>
+                 <div class="mouseOverInfoOuter" onfocus="addMouseOver(this)" onmouseover="addMouseOver(this)" tabindex="0">
+                    <img src="/s.gif" alt="" class="infoIcon" title=""/>
+                    <div class="mouseOverInfo" style="opacity: 0; display: none; ">If this feature don't work try to clear cookie in your browser and reload page.</div>
+                 </div>
+              <apex:outputPanel onclick="openNewFieldWindow(this,'TOA__ETAworkforceNotification__c','_AddNotificationField');" styleClass="btn" style="padding:5px;">Add Notification field...</apex:outputPanel>
+                 <div class="mouseOverInfoOuter" onfocus="addMouseOver(this)" onmouseover="addMouseOver(this)" tabindex="0">
+                    <img src="/s.gif" alt="" class="infoIcon" title=""/>
+                    <div class="mouseOverInfo" style="opacity: 0; display: none; ">If this feature don't work try to clear cookie in your browser and reload page.</div>
+                 </div>                                
+              <apex:outputPanel onclick="localAdvanced=!localAdvanced;this.innerText=(localAdvanced?'Simple':'Advanced');document.getElementById('{!$Component.thePage.theForm.theBlock.theHiddenAdvancedMode}').value=(localAdvanced?'true':'false');UpdateSimpleMappingDisplay();" styleClass="btn" style="padding:5px;">{!IF(mappingAdvancedMode==true,"Simple","Advanced")}</apex:outputPanel>
+              <apex:commandButton action="{!cancel}" styleClass="btn" style="padding:5px;" value="Cancel"/>              
+           </apex:pageBlockButtons>
+
+           <apex:pageBlockTable value="{!simpleMappingFieldsForEdit}" var="sf" id="theSimpleFields" style="visibility:hidden">
+              <div class="AdvancedMode">
+                 <apex:column headerValue="Action" width="8%" styleClass="actionColumn {!sf.00N90000007MeZR}" style="padding:5px;">
+                 <apex:commandLink target="_blank" action="{!URLFOR($Page.ETAworkforceMappingDictionaryPage,null,['dsfn'=sf.Notification_field_name__c,'objname'=sf.MainObject__c])}" 
+                    value="Dictionary" rendered="{!IF(NULLVALUE(sf.00N90000007MeZM,0.0)>=1.0,"true","false")}" styleClass="{!sf.00N90000007MeZR} {!IF(NULLVALUE(sf.00N90000007MeZM,0.0)==2.0,"actionLink","")}"/>
+                 </apex:column>
+
+                 <apex:column value="{!sf.00N90000007MeZP}" width="10%" style="font-weight:bold" styleClass="{!sf.00N90000007MeZR}"/>
+                 <apex:column headerValue="Description" value="{!$ObjectType.TOA__ETAworkforceNotification__c.fields[sf.00N90000007MeZQ].InlineHelpText}" 
+                    width="30%" styleClass="{!sf.00N90000007MeZR}" headerClass="SimpleMode"/>
+                 <apex:column headerValue="{!$ObjectType.TOA__SimpleMappingField__c.Fields.00N90000007MeZL.Label}"
+                      width="5%" styleClass="{!sf.00N90000007MeZR}">
+                    <apex:selectList id="theDirection" value="{!sf.00N90000007MeZL}"
+                      size="1" styleClass="ui-state-default ui-corner-all"
+                      style="padding:3px;">
+                         <apex:selectOption itemValue="out" itemLabel="Out" />
+                         <apex:selectOption itemValue="in" itemLabel="In" />
+                         <apex:selectOption itemValue="in,out" itemLabel="In,Out" />
+                    </apex:selectList>
+                 </apex:column>
+                 <apex:column value="{!sf.00N90000007MeZQ}" width="5%"
+                    styleClass="AdvancedMode {!sf.00N90000007MeZR}" headerClass="AdvancedMode"/>
+                 <apex:column headerValue="{!$ObjectType.TOA__SimpleMappingField__c.Fields.00N90000007MeZS.Label}" styleClass="{!sf.00N90000007MeZR}">
+                    <div class="fieldButton" id="{!sf.00N90000007MeZQ}">{!sf.00N90000007MeZS}</div>
+                       <div id="Edit_{!sf.00N90000007MeZQ}">
+                          <apex:inputHidden value="{!sf.00N90000007MeZS}" />
+                       </div>
+                       <div id="EditType_{!sf.00N90000007MeZQ}">
+                          <apex:inputHidden value="{!sf.00N90000007MeZO}" />
+                       </div>
+                </apex:column>
+             </div>
+          </apex:pageBlockTable>
+      </apex:Pageblock>                                
+   </apex:form>
+</apex:page>

@@ -1,0 +1,43 @@
+<apex:page controller="ETAblack.TOAEditSkillsController" setup="true">
+    <apex:form >
+        <apex:sectionHeader title="Skills Edit" rendered="{!NOT(isDetail)}"/>
+        <apex:sectionHeader title="Skills Detail" rendered="{!isDetail}"/>
+        <apex:pageBlock title="Skills Information">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Edit" action="{!editSkill}" rendered="{!isDetail}"/>
+                <apex:commandButton value="Save" action="{!saveSkill}" rendered="{!NOT(isDetail)}"/>
+                <apex:commandButton value="Cancel" action="{!goBack}" rendered="{!NOT(isDetail)}" immediate="true"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Name" for="name"/>
+                    <apex:outputPanel id="name">
+                        <apex:outputField value="{!Skill.Name}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!Skill.Name}" required="true" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Average" for="average"/>
+                    <apex:outputPanel id="average">
+                        <apex:outputField value="{!Skill.ETAblack__Average__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!Skill.ETAblack__Average__c}" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Excellent" for="excellent"/>
+                    <apex:outputPanel id="excellent">
+                        <apex:outputField value="{!Skill.ETAblack__Excellent__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!Skill.ETAblack__Excellent__c}" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Good" for="good"/>
+                    <apex:outputPanel id="good">
+                        <apex:outputField value="{!Skill.ETAblack__Good__c}" rendered="{!isDetail}"/>
+                        <apex:inputField value="{!Skill.ETAblack__Good__c}" rendered="{!NOT(isDetail)}"/>                    
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

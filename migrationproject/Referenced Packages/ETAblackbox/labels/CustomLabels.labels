@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>AM_field_name</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AM field name</shortDescription>
+        <value>Field name</value>
+    </labels>
+    <labels>
+        <fullName>Action</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Action</shortDescription>
+        <value>Action</value>
+    </labels>
+    <labels>
+        <fullName>Activity_fields_mapping</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Activity fields mapping</shortDescription>
+        <value>Activity fields mapping</value>
+    </labels>
+    <labels>
+        <fullName>Add_reverse_mapping</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Add reverse mapping</shortDescription>
+        <value>Add reverse mapping</value>
+    </labels>
+    <labels>
+        <fullName>All_errors_attached</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>All errors attached</shortDescription>
+        <value>All errors for All users are cummulated and attached as a file</value>
+    </labels>
+    <labels>
+        <fullName>Apex_dev_network</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Apex developers network</shortDescription>
+        <value>Apex developers network</value>
+    </labels>
+    <labels>
+        <fullName>At_start</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>At start</shortDescription>
+        <value>At the beginning</value>
+    </labels>
+    <labels>
+        <fullName>Cancel</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>ChartType</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ChartType</shortDescription>
+        <value>Side bar status type</value>
+    </labels>
+    <labels>
+        <fullName>Close</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Close</shortDescription>
+        <value>Close</value>
+    </labels>
+    <labels>
+        <fullName>Const_field</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Const field</shortDescription>
+        <value>Text value</value>
+    </labels>
+    <labels>
+        <fullName>Create</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create</shortDescription>
+        <value>Create</value>
+    </labels>
+    <labels>
+        <fullName>Create_field</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create field</shortDescription>
+        <value>Create {ON} field</value>
+    </labels>
+    <labels>
+        <fullName>Create_mapping_for</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create mapping for</shortDescription>
+        <value>Create mapping for</value>
+    </labels>
+    <labels>
+        <fullName>Create_new_user</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create new user</shortDescription>
+        <value>Create new user</value>
+    </labels>
+    <labels>
+        <fullName>Delete</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete</shortDescription>
+        <value>Delete</value>
+    </labels>
+    <labels>
+        <fullName>Delete_older</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete messages older</shortDescription>
+        <value>Keep messages(hours)</value>
+    </labels>
+    <labels>
+        <fullName>Delete_older_wrong</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete older format error</shortDescription>
+        <value>Keep messages(hour) should be numeric.</value>
+    </labels>
+    <labels>
+        <fullName>Deploy_error</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Deploy error</shortDescription>
+        <value>Deploy error :</value>
+    </labels>
+    <labels>
+        <fullName>Deploy_error_too_long</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Deploy error too long</shortDescription>
+        <value>Too long operation. Result is unknown. Please go to &quot;Monitor Deployments&quot; and check a result.</value>
+    </labels>
+    <labels>
+        <fullName>Description</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>Dictionary</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Dictionary</shortDescription>
+        <value>Dictionary</value>
+    </labels>
+    <labels>
+        <fullName>Document_value</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Document value</shortDescription>
+        <value>{ON} document content</value>
+    </labels>
+    <labels>
+        <fullName>Edit</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Edit</shortDescription>
+        <value>Edit</value>
+    </labels>
+    <labels>
+        <fullName>Edit_AM_mapping_field</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Edit AM mapping field</shortDescription>
+        <value>Edit Activity message mapping field</value>
+    </labels>
+    <labels>
+        <fullName>Empty_doc_field</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Empty document field</shortDescription>
+        <value>Mapping Document content: Validation Error: Value is required</value>
+    </labels>
+    <labels>
+        <fullName>Empty_instance_user_pwd</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Empty instance user password</shortDescription>
+        <value>Empty instance user password.</value>
+    </labels>
+    <labels>
+        <fullName>Empty_mapping_field</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Empty mapping field</shortDescription>
+        <value>Message field name: Validation Error: Value is required.</value>
+    </labels>
+    <labels>
+        <fullName>Empty_object_field</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Empty object field</shortDescription>
+        <value>Mapping object field: Validation Error: Value is required.</value>
+    </labels>
+    <labels>
+        <fullName>Export_failed</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Export failed</shortDescription>
+        <value>Can&apos;t export setting:</value>
+    </labels>
+    <labels>
+        <fullName>Export_success</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Export success</shortDescription>
+        <value>Settings has been exported sucessfully.</value>
+    </labels>
+    <labels>
+        <fullName>Export_to</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Export to</shortDescription>
+        <value>Export to</value>
+    </labels>
+    <labels>
+        <fullName>Field_value</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Field value</shortDescription>
+        <value>{ON} field value</value>
+    </labels>
+    <labels>
+        <fullName>Filter</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter</shortDescription>
+        <value>Filter</value>
+    </labels>
+    <labels>
+        <fullName>From_message</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>From message</shortDescription>
+        <value>From message</value>
+    </labels>
+    <labels>
+        <fullName>Full_company_name</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Full company name</shortDescription>
+        <value>TOA Technologies</value>
+    </labels>
+    <labels>
+        <fullName>If_user_label</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inerface user name</shortDescription>
+        <value>Inerface user name</value>
+    </labels>
+    <labels>
+        <fullName>If_user_not_selected</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Interface user not selected</shortDescription>
+        <value>Interface user isn&apos;t selected. Go to configuration page and select user.</value>
+    </labels>
+    <labels>
+        <fullName>If_user_pwd</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Instance password</shortDescription>
+        <value>Instance password</value>
+    </labels>
+    <labels>
+        <fullName>If_user_token</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Interface user token</shortDescription>
+        <value>Interface user token</value>
+    </labels>
+    <labels>
+        <fullName>Import</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Import</shortDescription>
+        <value>Import</value>
+    </labels>
+    <labels>
+        <fullName>Import_from</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Import from</shortDescription>
+        <value>Import fields from {PN}</value>
+    </labels>
+    <labels>
+        <fullName>Import_mapping_fields</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Import mapping fields</shortDescription>
+        <value>Import mapping fields</value>
+    </labels>
+    <labels>
+        <fullName>IncomingBatchLimit_wrong</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>IncomingBatchLimit wrong</shortDescription>
+        <value>Incomig inline mapping limit should be numeric</value>
+    </labels>
+    <labels>
+        <fullName>Instance_URL</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Instance URL</shortDescription>
+        <value>Instance URL</value>
+    </labels>
+    <labels>
+        <fullName>Instance_name</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Instance name</shortDescription>
+        <value>Instance name</value>
+    </labels>
+    <labels>
+        <fullName>Instance_user</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Instance user</shortDescription>
+        <value>Instance user</value>
+    </labels>
+    <labels>
+        <fullName>Instance_user_pwd</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Instance user password</shortDescription>
+        <value>Instance user password</value>
+    </labels>
+    <labels>
+        <fullName>Invalid_custom_type_name</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Invalid custom type name</shortDescription>
+        <value>Invalid custom mapping class name</value>
+    </labels>
+    <labels>
+        <fullName>Label</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label</shortDescription>
+        <value>Label</value>
+    </labels>
+    <labels>
+        <fullName>Load</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Load</shortDescription>
+        <value>Load settings from a file</value>
+    </labels>
+    <labels>
+        <fullName>Load_failed</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Load failed</shortDescription>
+        <value>Load settings failed:</value>
+    </labels>
+    <labels>
+        <fullName>Load_original</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Load original</shortDescription>
+        <value>Original settings have been restored</value>
+    </labels>
+    <labels>
+        <fullName>Map_to_object</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Map to object</shortDescription>
+        <value>Map to sObject</value>
+    </labels>
+    <labels>
+        <fullName>Mapped_object</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapped object</shortDescription>
+        <value>Mapping sObject</value>
+    </labels>
+    <labels>
+        <fullName>Mapping_batch_inc_limit</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapping batch incoming limit</shortDescription>
+        <value>Incoming inline mapping limit</value>
+    </labels>
+    <labels>
+        <fullName>Mapping_batch_inc_limit_desc</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapping batch incoming limit description</shortDescription>
+        <value>&apos;&apos;</value>
+    </labels>
+    <labels>
+        <fullName>Mapping_batch_out_limit</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapping batch outgoing limit</shortDescription>
+        <value>Outgoing inline mapping limit</value>
+    </labels>
+    <labels>
+        <fullName>Mapping_batch_out_limit_desc</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapping batch outgoing limit description</shortDescription>
+        <value>&apos;&apos;</value>
+    </labels>
+    <labels>
+        <fullName>Mapping_batch_scope</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapping batch scope</shortDescription>
+        <value>Mapping batch scope</value>
+    </labels>
+    <labels>
+        <fullName>Mapping_batch_scope_desc</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapping batch scope description</shortDescription>
+        <value>Record size in a batch transaction.</value>
+    </labels>
+    <labels>
+        <fullName>Mapping_obj_not_found</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mapping object not found</shortDescription>
+        <value>Mapped object not found.</value>
+    </labels>
+    <labels>
+        <fullName>Message_fields_mapping_class</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Message fields mapping class</shortDescription>
+        <value>Message fields mapping class</value>
+    </labels>
+    <labels>
+        <fullName>Message_fields_mapping_class_desc</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Message fields mapping class description</shortDescription>
+        <value>Class name for custom fields mapping witch implements Workforce2_MappingInterface</value>
+    </labels>
+    <labels>
+        <fullName>New</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New</shortDescription>
+        <value>New</value>
+    </labels>
+    <labels>
+        <fullName>New_AM_mapping_field</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New AM mapping field</shortDescription>
+        <value>New Activity message mapping field</value>
+    </labels>
+    <labels>
+        <fullName>New_trigger</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New trigger</shortDescription>
+        <value>New {ON} trigger</value>
+    </labels>
+    <labels>
+        <fullName>Non_existing_fields</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Non existing fields</shortDescription>
+        <value>Activity message object doesn&apos;t contain some fields. Please delete mapping or create next fields:</value>
+    </labels>
+    <labels>
+        <fullName>Non_selected_object</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Non selected object</shortDescription>
+        <value>Please select object first.</value>
+    </labels>
+    <labels>
+        <fullName>None</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>None</shortDescription>
+        <value>--None--</value>
+    </labels>
+    <labels>
+        <fullName>Not_exported_to</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Not exported to</shortDescription>
+        <value>Not exported to</value>
+    </labels>
+    <labels>
+        <fullName>Object_mapping</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Object mapping</shortDescription>
+        <value>{ON} mapping.</value>
+    </labels>
+    <labels>
+        <fullName>Object_mapping_delete</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Object mapping delete</shortDescription>
+        <value>Delete {ON} mapping</value>
+    </labels>
+    <labels>
+        <fullName>Ok</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ok</shortDescription>
+        <value>Ok</value>
+    </labels>
+    <labels>
+        <fullName>OutgoingBatchLimit_wrong</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>OutgoingBatchLimit wrong</shortDescription>
+        <value>Outgoing inline mapping limit should be numeric</value>
+    </labels>
+    <labels>
+        <fullName>Password_query_detail</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Password query detail</shortDescription>
+        <value>If this password wrong - no any changes will be exported.</value>
+    </labels>
+    <labels>
+        <fullName>Password_query_title</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Password query title</shortDescription>
+        <value>Please enter password for Salesforce user used to communicate with {PN}.</value>
+    </labels>
+    <labels>
+        <fullName>ProductName</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Product localization name</shortDescription>
+        <value>ETAworkforce</value>
+    </labels>
+    <labels>
+        <fullName>Retrieve_from</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Retrieve from ETAdirect</shortDescription>
+        <value>Retrieve from {PN}</value>
+    </labels>
+    <labels>
+        <fullName>Save</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Save</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>Send_to</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Send to ETAdirect</shortDescription>
+        <value>Send to {PN}</value>
+    </labels>
+    <labels>
+        <fullName>Settings_Edit</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Settings Edit</shortDescription>
+        <value>Settings Edit</value>
+    </labels>
+    <labels>
+        <fullName>Settings_View</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Settings View</shortDescription>
+        <value>Settings View</value>
+    </labels>
+    <labels>
+        <fullName>Settings_details</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Settings details</shortDescription>
+        <value>{PN} v{PV} details</value>
+    </labels>
+    <labels>
+        <fullName>Store</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Store</shortDescription>
+        <value>Store setting to a file</value>
+    </labels>
+    <labels>
+        <fullName>Store_failed</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Store failed</shortDescription>
+        <value>Strore setting failed:</value>
+    </labels>
+    <labels>
+        <fullName>Store_success</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Store success</shortDescription>
+        <value>Settings have been stored to user document&apos;s folder successfully.</value>
+    </labels>
+    <labels>
+        <fullName>Support</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Support</shortDescription>
+        <value>Support</value>
+    </labels>
+    <labels>
+        <fullName>TOA_fields_label</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>TOA fields label</shortDescription>
+        <value>TOAdirect Fields</value>
+    </labels>
+    <labels>
+        <fullName>TOAproductName</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TOA technologies product name</shortDescription>
+        <value>ETAdirect</value>
+    </labels>
+    <labels>
+        <fullName>To_and_from</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Both direction</shortDescription>
+        <value>Both direction</value>
+    </labels>
+    <labels>
+        <fullName>To_message</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>To message</shortDescription>
+        <value>To message</value>
+    </labels>
+    <labels>
+        <fullName>View_AM</fullName>
+        <categories>WEB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>View Activity messages</shortDescription>
+        <value>View Activity messages</value>
+    </labels>
+    <labels>
+        <fullName>Wrong_type_name</fullName>
+        <categories>APEX</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Wrong type name</shortDescription>
+        <value>Wrong type name</value>
+    </labels>
+</CustomLabels>

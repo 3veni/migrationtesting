@@ -1,0 +1,24 @@
+<apex:page sidebar="false" setup="false" tabStyle="ETAworkforceTab__tab" 
+        standardController="TOA__ETAworkforceNotification__c"
+        extensions="TOA.ETAworkforceInboundMessageXmlController" id="theETAworkforceInboundMessageXml"
+        title="Inbound message {!$CurrentPage.parameters.Id} View"
+        readOnly="true"
+        showHeader="false">
+    <apex:sectionHeader title="ETAworkforce v{!PackageVersion}" 
+        subtitle="Inbound message {!$CurrentPage.parameters.Id} View" 
+        />
+    <style type="text/css">
+       span.startElement {color:blue;}
+       span.endElement {color:blue;}
+       span.textElement {color:black;}
+       span.nsElement {color:green;}
+       span.attrElement {green;}
+     </style>        
+     <apex:pageBlock >
+        <apex:pageBlockSection columns="1">
+           <apex:pageBlockSectionItem >
+               <apex:outputText escape="false" value="{!InboundQueryHtml}"></apex:outputText>
+           </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,20 @@
+<apex:page controller="calenderwithmonthscltrl" >
+<apex:form >
+    <apex:pageblock >
+        <apex:pageBlockButtons >
+        <apex:commandbutton value="prev" action="{!prev}"/>{!smonth}&nbsp;&nbsp;{!iyear}
+        <apex:commandbutton value="next" action="{!next}"/>
+        </apex:pageBlockButtons>
+        {!days}
+        <apex:inputtextarea rendered="{!if(jilist!=null,false,true)}">
+        </apex:inputtextarea>
+        <apex:pageblocktable value="{!jilist}" var="j" rendered="{!jilist!=null}">
+        <apex:column >
+        <apex:outputtext value="{!j.id}"/>
+        <apex:outputtext value="{!j.Date_of_Application__c}"/>
+        </apex:column>
+        </apex:pageblocktable>
+    </apex:pageblock>
+    </apex:form>
+  
+</apex:page>

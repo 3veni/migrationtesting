@@ -1,0 +1,469 @@
+<apex:page controller="ETAblack.Workforce2_SettingsCtrl"
+    cache="false"
+    extensions="ETAblack.Workforce2_SettingsMappingCtrl"
+    title="{!$Label.etablack__ProductName} {!$Label.etablack__Settings_Edit}" id="thePage"
+    setup="{!IF($CurrentPage.parameters.setup=="true",true,false)}"
+    sidebar="{!IF($CurrentPage.parameters.sidebar=="false",false,true)}"
+>
+<!--     tabStyle="WorkforceTab__tab" -->
+<script>if('{!$CurrentPage.parameters.nonce}'!==''){window.location.search='';};</script>
+<apex:variable value="{!$CurrentPage.parameters.e==null}" var="viewOnly" />
+<apex:variable value="{!IF($CurrentPage.parameters.retURL==null,'/home/home.jsp',$CurrentPage.parameters.retURL)}" var="retURL" />
+<apex:sectionHeader title="{!$Label.etablack__ProductName} v{!PackageVersion}" subtitle="{!IF(viewOnly,$Label.etablack__Settings_View,$Label.etablack__Settings_Edit)}" 
+    help="{!URLFOR($Page.ETAblack__Workforce2_HelpPage,null,['id'='Settings'])}" />
+<apex:variable value="{!RIGHT(URLFOR($Action.Workforce2_ActivityMessage__c.ChangeOwner,$ObjectType.ETAblack__Workforce2_ActivityMessage__c.KeyPrefix,null),15)}" var="amEnt" />
+<apex:form id="theForm">
+    <apex:pageMessages escape="false" id="theMessages" />
+    <apex:pageMessage severity="warning" strength="1" id="theMessage" title="{!$Label.etablack__Not_exported_to} {!$Label.etablack__TOAproductName}" rendered="{!!synchronizedWithETAdirect}"></apex:pageMessage>
+
+    <apex:PageBlock mode="maindetail" id="thePageBlock">
+    <apex:actionFunction action="{!exportToEtadirect}" name="exportToEtadirect" status="mainStatus" reRender="theMessages,theForm">
+        <apex:param assignTo="{!interfaceUserPassword}" name="interfaceUserPassword" value=""/>
+    </apex:actionFunction>
+
+    <apex:actionFunction action="{!loadSettings}" name="loadSettings" status="mainStatus" reRender="theMessages,theMessage">
+        <apex:param assignTo="{!loadDocumentId}" name="loadDocumentId" value=""/>
+    </apex:actionFunction>
+    <script language="JavaScript" type="text/javascript">
+        function exportToEtadirectProxy(pwd)
+        {
+            exportToEtadirect(pwd);
+        }
+        oldLookupPick=lookupPick;
+        function myLookupPick(p1,p2,p3,p4,p5,p6,p7,p8)
+        {
+            if(p3=='docMy')
+            {
+                this.closePopup();
+                loadSettings(p5);
+            }
+            else
+                return oldLookupPick(p1,p2,p3,p4,p5,p6,p7,p8);
+        }
+        lookupPick=myLookupPick;
+    </script>
+
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton action="{!saveSettings}" styleClass="btn" style="padding:5px;" value="{!$Label.etablack__Save}" rendered="{!!viewOnly}" />
+            
+            <apex:outputPanel onclick="document.location.href='{!URLFOR($Page.ETAblack__Workforce2_SettingsPage,null,['e'='1','retURL'=$Page.ETAblack__Workforce2_SettingsPage])}'" 
+                styleClass="btn" style="padding:5px;" rendered="{!viewOnly}">{!$Label.etablack__Edit}</apex:outputPanel>
+                
+            <apex:outputPanel onclick="document.location.href='{!IF(viewOnly,URLFOR(retURL,null,null),URLFOR($Page.ETAblack__Workforce2_SettingsPage,null,null))}'" 
+                styleClass="btn" style="padding:5px;">{!$Label.etablack__Cancel}</apex:outputPanel>
+                
+            <img src="/img/loading.gif" style="visibility:hidden" id="processIcon" />
+            
+            <apex:actionStatus id="mainStatus" onstart="document.getElementById('processIcon').style.visibility='visible'" 
+                onstop="document.getElementById('processIcon').style.visibility='hidden'">
+            </apex:actionStatus>
+            
+            <apex:outputPanel styleClass="btn" style="padding:5px;" rendered="{!viewOnly}" 
+                onclick="window.showModalDialog('{!URLFOR($Page.ETAblack__Workforce2_PasswordPage,null)}','','dialogHeight:200;dialogWidth:400;center:yes;toolbar:no;status:no;directories:no;menubar:no;resizable:yes;scrollable:no,scroll:off');">{!$Label.etablack__Export_to} {!$Label.etablack__TOAproductName}...</apex:outputPanel>
+
+
+                    
+            <div style="margin-left:-60px;margin-top:20px">    
+                <apex:commandLink action="{!storeSettings}"  style="padding:5px;color:#015BA7;" value="{!$Label.etablack__Store}" rendered="{!viewOnly}" reRender="theMessages,theMessage"/>
+            
+                <apex:outputLink styleClass="link" style="padding:5px;color:#015BA7;" rendered="{!viewOnly}" 
+                    onclick="openPopup('/_ui/common/data/LookupPage?lkfm=editPage&lknm=docMy&lktp=015&lksrch=', 'lookup', 350, 480, 'width=640,height=480,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no', true);">{!$Label.etablack__Load}...</apex:outputLink>
+                <apex:outputLink onclick="window.open('{!URLFOR('/'&$ObjectType.ETAblack__Workforce2_ActivityMessage__c.KeyPrefix&'/l',null)}','ActivityList');" 
+                    style="padding:5px;color:#015BA7;" rendered="{!viewOnly}">{!$Label.etablack__View_AM}...</apex:outputLink>                    
+            </div>    
+        </apex:pageBlockButtons>
+        <br />
+        <apex:PageBlock mode="{!IF(viewOnly,'maindetail','detail')}" id="thePageBlock" title="{!SUBSTITUTE(SUBSTITUTE($Label.etablack__Settings_details,'{PN}',$Label.etablack__ProductName),'{PV}',PackageVersion)}">
+            <!--BEGIN VIEW GENERAL SETTINGS -->
+            <apex:PageBlockSection columns="1" collapsible="false" rendered="{!viewOnly}">
+                <apex:PageBlockSection columns="2">
+                    <apex:outputField value="{!settings['InstanceName'].Value__c}" label="{!settings['InstanceName'].Label__c}" />
+                    <apex:outputField value="{!settings['InstanceUrl'].Value__c}" label="{!settings['InstanceUrl'].Label__c}" />
+                    <apex:outputField value="{!settings['InstanceUser'].Value__c}" label="{!settings['InstanceUser'].Label__c}" />
+                    
+                    <apex:outputText escape="false" value="{!IF(ISBLANK(protectedSettings['InstanceUserPassword'].Value__c),'',
+                        '&bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull;')}" 
+                        label="{!protectedSettings['InstanceUserPassword'].Label__c}" />
+                </apex:PageBlockSection>
+                <apex:PageBlockSection columns="2">
+                    <apex:outputField value="{!fakeInterfaceUser.RunAsUserId}" label="{!settings['InterfaceUserId'].Label__c}" />
+                    <apex:outputText escape="false" value="{!IF(ISBLANK(protectedSettings['InterfaceUserToken'].Value__c),'',
+                        '&bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull;')}" 
+                        label="{!protectedSettings['InterfaceUserToken'].Label__c}" />
+                </apex:PageBlockSection>                    
+                <apex:PageBlockSection columns="2">                
+                    <apex:outputField value="{!settings['MappingBatchScope'].Value__c}" label="{!settings['MappingBatchScope'].Label__c}" />
+                    <apex:outputField value="{!settings['IncomingBatchLimit'].Value__c}" label="{!settings['IncomingBatchLimit'].Label__c}" />
+                    <apex:outputField value="{!settings['OutgoingBatchLimit'].Value__c}" label="{!settings['OutgoingBatchLimit'].Label__c}" />
+                    <apex:outputField value="{!settings['MapppingClassName'].Value__c}" label="{!settings['MapppingClassName'].Label__c}" />
+                </apex:PageBlockSection>
+                <apex:PageBlockSection columns="2">                    
+                    <apex:PageBlockSectionItem >
+                        <apex:outputLabel for="theChartType" value="{!settings['ChartType'].Label__c}" />
+                        <apex:outputText label="{!settings['ChartType'].Label__c}" value="{!settings['ChartType'].Value__c}" />
+                    </apex:PageBlockSectionItem>
+                    <apex:outputField value="{!settings['DeleteMessagesOlder'].Value__c}" label="{!settings['DeleteMessagesOlder'].Label__c}" />
+                </apex:PageBlockSection>                                    
+                <apex:PageBlockSection columns="2">
+                    <apex:outputField value="{!settings['Description'].Value__c}" label="{!settings['Description'].Label__c}" style="width:80%;max-width:700px" />
+                    <apex:outputText value="{!lastModifiedDate}" label="{!$ObjectType.ETAblack__Workforce2_ProtectedSettingsItems__c.fields.LastModifiedDate.Label}" />
+                    <apex:outputText value="{!createdDate}" label="{!$ObjectType.ETAblack__Workforce2_ProtectedSettingsItems__c.fields.CreatedDate.Label}" />
+                    <apex:outputField value="{!fakeLastModiffiedUser.RunAsUserId}" label="{!$ObjectType.ETAblack__Workforce2_ProtectedSettingsItems__c.fields.LastModifiedById.Label}" />
+                </apex:PageBlockSection>                    
+            </apex:PageBlockSection>
+            <!--END VIEW GENERAL SETTINGS -->
+            <!--BEGIN EDIT GENERAL SETTINGS -->
+            <apex:PageBlockSection columns="1" collapsible="false" rendered="{!!viewOnly}">
+                <apex:inputField value="{!settings['Description'].Value__c}" label="{!settings['Description'].Label__c}" style="width:80%;max-width:700px" />
+                <br/>
+                <apex:PageBlockSection columns="1">
+                    <apex:inputField value="{!settings['InstanceUrl'].Value__c}" label="{!settings['InstanceUrl'].Label__c}" style="width:80%;max-width:700px" required="true" />
+                    <apex:inputField value="{!settings['InstanceName'].Value__c}" label="{!settings['InstanceName'].Label__c}" required="true" />
+                    <apex:inputField value="{!settings['InstanceUser'].Value__c}" label="{!settings['InstanceUser'].Label__c}" required="true" />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="theInstanceUserPassword" value="{!protectedSettings['InstanceUserPassword'].Label__c}" />
+                        <apex:outputPanel id="theInstanceUserPassword">
+                            <div class="requiredInput">
+                                <div class="requiredBlock"> </div>
+                                <apex:inputSecret required="true" redisplay="true" value="{!instanceUserPassword}" 
+                                    label="{!protectedSettings['InstanceUserPassword'].Label__c}" />
+                            </div>
+                        </apex:outputPanel>                
+                    </apex:pageBlockSectionItem>
+                </apex:PageBlockSection>
+                <br/>
+                <apex:PageBlockSection columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="theUserId" value="{!settings['InterfaceUserId'].Label__c}" />
+                        <apex:outputPanel id="theUserId">
+                            <div style="display:block;float:left">
+                                <apex:inputField value="{!fakeInterfaceUser.RunAsUserId}" required="true" />
+                            </div>
+                            <div style="display:block;vertical-align:middle;padding-top:5px">
+                                <apex:outputLink value="{!URLFOR('/005/e',null,['Username'=$Organization.Id&'.'&LOWER($Label.ProductName)&'@interface.toa',
+                                        'name_lastName'=$Label.ProductName,'Alias'='etawfi','Email'=$User.Email,'CommunityNickname'=$Organization.Id&'@etawf2',
+                                        'Profile'=LEFT(SAProfile.Id,15),'user_license_id'=LEFT(SAProfile.UserLicenseId,15),
+                                        'retURL'=$Page.Workforce2_SettingsPage&'?e=1&lastUser=1'])}" style="padding:5px;text-decoration:none;color:#015BA7;" 
+                                         styleClass="actionLink" target="NewUser">{!$Label.etablack__Create_new_user}</apex:outputLink>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:inputField required="false" value="{!protectedSettings['InterfaceUserToken'].Value__c}" label="{!protectedSettings['InterfaceUserToken'].Label__c}" />
+                </apex:PageBlockSection>                
+                <br/>
+                <apex:PageBlockSection columns="1">
+                    <apex:inputField value="{!settings['MappingBatchScope'].Value__c}" label="{!settings['MappingBatchScope'].Label__c}" />
+                    <apex:inputField value="{!settings['IncomingBatchLimit'].Value__c}" label="{!settings['IncomingBatchLimit'].Label__c}" />
+                    <apex:inputField value="{!settings['OutgoingBatchLimit'].Value__c}" label="{!settings['OutgoingBatchLimit'].Label__c}" />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="theMappingClass" value="{!settings['MapppingClassName'].Label__c}" />
+                        <apex:outputPanel id="theMappingClass">
+                            <div class="requiredInput">
+                                <div class="requiredBlock"> </div>
+                                <apex:selectList required="true" value="{!mappingClassName}" size="1" label="{!settings['MapppingClassName'].Label__c}">
+                                    <apex:selectOptions value="{!mappingClassNames}" />
+                                </apex:selectList>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:selectRadio label="{!settings['ChartType'].Label__c}" value="{!settings['ChartType'].Value__c}">
+                            <apex:selectOption itemLabel="Pie" itemValue="Pie"/>
+                            <apex:selectOption itemLabel="Gauge" itemValue="Gauge"/>
+                            <apex:selectOption itemLabel="Table" itemValue="Table"/>                                                        
+                    </apex:selectRadio>
+                    <apex:inputField value="{!settings['DeleteMessagesOlder'].Value__c}" label="{!settings['DeleteMessagesOlder'].Label__c}" required="true"/>
+                </apex:PageBlockSection>                                
+            </apex:PageBlockSection>
+            <!--END EDIT GENERAL SETTINGS -->
+        </apex:PageBlock>
+    </apex:PageBlock>
+    <apex:PageBlock mode="maindetail" rendered="{!viewOnly}" id="theMB">
+        <!--BEGIN CREATE MAPPING FOR CLASS -->
+        <apex:pageBlockButtons location="top">
+            <apex:outputPanel onclick="document.getElementById('theSelectObjectWnd').style.display='';" styleClass="btn" style="padding: 5px">{!$Label.etablack__Create_mapping_for}...</apex:outputPanel>
+        </apex:pageBlockButtons>
+        <br />
+        <div style="position: absolute;top: 40%;left: 30%;width: 40%;margin: auto 0;display:none;border-width:thick;" id="theSelectObjectWnd"
+                class="bPageBlock brandSecondaryBrd">
+            <apex:pageBlock title="{!$Label.etablack__Map_to_object}" id="theCOSB" tabStyle="Account">
+                <apex:pageBlockButtons location="bottom">
+                    <apex:actionFunction action="{!createMapping}" name="createMapping" />
+                    <script src="/soap/ajax/23.0/connection.js" language="JavaScript" type="text/javascript"></script>
+                    <!-- MIT license or GPLv3 - http://stuk.github.com/jszip/ -->
+                    <script src="{!URLFOR($Resource.jszip,'/Stuk-jszip-e45a4d7/jszip.js')}" language="JavaScript" type="text/javascript"></script>
+                    <script src="{!URLFOR($Resource.jszip,'/Stuk-jszip-e45a4d7/jszip-load.js')}" language="JavaScript" type="text/javascript"></script>
+                    <script language="JavaScript" type="text/javascript">
+                        var session='{!GETSESSIONID()}';
+                        function checkDeployStatus(id)
+                        {
+                           sforce.connection.init( '{!GETSESSIONID()}', "/services/Soap/m/25.0" );
+                           try
+                           {
+                              var arg = new sforce.internal.Parameter( "asyncProcessId", [id], true );
+                              var queryResult = sforce.connection._invoke( "checkDeployStatus", [arg], true, null,
+                                          [{ns:'http://soap.sforce.com/2006/04/metadata', prefix:null},
+                                           {ns:'http://soap.sforce.com/2006/04/metadata', prefix:"met"}],
+                                                sforce.connection.serverUrl,
+                                                'http://soap.sforce.com/2006/04/metadata',
+                                                'http://soap.sforce.com/2006/04/metadata' )
+                              if ( queryResult[0].getBoolean("success")!=true )
+                              {
+                                 if(queryResult[0].messages instanceof Array)
+                                     alert('{!JSENCODE($Label.Deploy_error)}'+queryResult[0].messages[0].problem);
+                                 else
+                                     alert('{!JSENCODE($Label.Deploy_error)}'+queryResult[0].messages.problem);
+                                 return -1;
+                              }
+                              return 0;
+                           }
+                           catch ( exc )
+                           {
+                              if(exc.faultstring.indexOf('InProgress')!=-1)
+                                  return 1;
+                              alert('{!JSENCODE($Label.Deploy_error)}' + ( exc.faultstring || exc ));
+                           }
+                           return -1;
+                        }
+                        function deployTrigger(typeName)
+                        {
+                           var triggerName='Workforce2_CreateMessageFor'+typeName.replace(new RegExp('__','g'),'_');
+                           var templateBody='{!JSENCODE(triggerBodyTemplate)}';
+                           var pkgNamespace='{!packageNamespace}';
+                           var triggerBody=templateBody.replace( new RegExp('<nameSpaceDot>','g'), (pkgNamespace!=''?pkgNamespace+'.':'') ).
+                                           replace( new RegExp('<nameSpaceUnderscore>','g'), (pkgNamespace!=''?pkgNamespace+'__':'') ).
+                                           replace( new RegExp('<objectType>','g'), typeName ).
+                                           replace( new RegExp('<objectTypeLabel>','g'),typeName.replace(new RegExp('__','g'),'_')
+                                );
+                           var jsz=new JSZip();
+                           jsz.folder('unpackaged').file('package.xml','<?xml version="1.0" encoding="UTF-8"?><Package xmlns="http://soap.sforce.com/2006/04/metadata"><types>'+
+                                   '<members>'+triggerName+'</members><name>ApexTrigger</name></types><version>12.0</version></Package>');
+                           jsz.folder('unpackaged').folder('triggers').file(triggerName+'.trigger',triggerBody);
+                           jsz.folder('unpackaged').folder('triggers').file(triggerName+'.trigger-meta.xml','<?xml version="1.0" encoding="UTF-8"?><ApexTrigger xmlns="http://soap.sforce.com/2006/04/metadata"><active>true</active>'+
+                                   '<apiVersion>25.0</apiVersion></ApexTrigger>');
+                           sforce.connection.init( '{!GETSESSIONID()}', "/services/Soap/m/25.0" );
+                           try
+                           {
+                              var arg = new sforce.internal.Parameter( "ZipFile", [jsz.generate()], true );
+                              var queryResult = sforce.connection._invoke( "deploy", [arg], true, null,
+                                          [{ns:'http://soap.sforce.com/2006/04/metadata', prefix:null},
+                                           {ns:'http://soap.sforce.com/2006/04/metadata', prefix:"met"}],
+                                                sforce.connection.serverUrl,
+                                                'http://soap.sforce.com/2006/04/metadata',
+                                                'http://soap.sforce.com/2006/04/metadata' )
+                              var id=queryResult[0]["id"];
+                              if ( id=='' || id==undefined || id==null )
+                              {
+                                 alert('{!JSENCODE($Label.Deploy_error)}'+queryResult[0].toString());
+                                 return false;
+                              }
+                              for(var i=0;i<10;i++)
+                              {
+                                 if(checkDeployStatus(id)<0)
+                                     return false; 
+                                 if(checkDeployStatus(id)==0)
+                                     return true;
+                              }
+                              alert('{!JSENCODE($Label.Deploy_error)}'+'{!JSENCODE($Label.Deploy_error_too_long)}');
+                           }
+                           catch ( exc )
+                           {
+                              alert('{!JSENCODE($Label.Deploy_error)}' + ( exc.faultstring || exc ));
+                           }
+                           return false;
+                        }
+                        function createTrigger(typeName)
+                        {
+                           if('{!$CurrentPage.parameters.tm}'!=='create')
+                               return deployTrigger(typeName);
+
+                           var templateBody='{!JSENCODE(triggerBodyTemplate)}';
+                           var pkgNamespace='{!packageNamespace}';
+                           var triggerBody=templateBody.replace( new RegExp('<nameSpaceDot>','g'), (pkgNamespace!=''?pkgNamespace+'.':'') ).
+                                           replace( new RegExp('<nameSpaceUnderscore>','g'), (pkgNamespace!=''?pkgNamespace+'__':'') ).
+                                           replace( new RegExp('<objectType>','g'), typeName ).
+                                           replace( new RegExp('<objectTypeLabel>','g'),typeName.replace(new RegExp('__','g'),'_') 
+                                );
+                           sforce.connection.init( '{!GETSESSIONID()}', "/services/Soap/s/25.0" );
+                           try
+                           {
+                              var trigger = new sforce.Xml( "compileAndTestRequest" );
+                              trigger.checkOnly = "false";
+                              trigger.triggers = triggerBody;
+                              var arg = new sforce.internal.Parameter( "sObjects", [trigger], true );
+                              var queryResult = sforce.connection._invoke( "compileAndTest", [arg], true, null,
+                                          [{ns:'http://soap.sforce.com/2006/08/apex', prefix:null},
+                                           {ns:'http://soap.sforce.com/2006/08/apex', prefix:"ns1"}],
+                                                sforce.connection.serverUrl,
+                                                'http://soap.sforce.com/2006/08/apex',
+                                                'http://soap.sforce.com/2006/08/apex' )
+
+                              if ( !queryResult[0].getBoolean( "success" ) )
+                              {
+                                 alert('{!JSENCODE($Label.Deploy_error)}'+queryResult[0].triggers.problem + ' '+queryResult[0].triggers.line+':'+ queryResult[0].triggers.column);
+                                 return false;
+                              }
+                              return true;
+                           }
+                           catch ( exc )
+                           {
+                              alert('{!JSENCODE($Label.Deploy_error)}' + ( exc.faultstring || exc ));
+                           }
+                           return false;
+                        }
+
+                        function createNewMapping()
+                        {
+                            var value=document.getElementById('{!$Component.thePage:theForm:theMB:theCOSB:theCOSBS:theCOS}').value;
+                            if(value=='')
+                            {
+                                alert('{!JSENCODE($Label.Non_selected_object)}');
+                            }
+                            else
+                            {
+                                if(createTrigger(value))
+                                    createMapping();
+
+                            }
+                        }
+                    </script>
+                    <apex:outputPanel onclick="createNewMapping();" styleClass="btn" style="padding:5px 15px;text-decoration:none;">{!$Label.etablack__Ok}</apex:outputPanel>
+                    <apex:outputPanel onclick="document.getElementById('theSelectObjectWnd').style.display='none';" styleClass="btn" style="padding: 5px;width:60px;">{!$Label.etablack__Cancel}</apex:outputPanel>
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection columns="1" id="theCOSBS">
+                    <apex:selectList value="{!customObject}" size="10" style="width:100%" label="{!$Label.etablack__Mapped_object}" id="theCOS">
+                        <apex:selectOptions value="{!customObjects}" />
+                    </apex:selectList>
+                    <br />
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </div>
+        <!--END CREATE MAPPING FOR CLASS -->
+        <!--BEGIN MAPPED CLASSES -->
+        <apex:actionFunction name="deleteMapping" action="{!deleteMapping}" rerender="" immediate="true">
+            <apex:param name="deleteObject" assignTo="{!deleteObject}" value="" />
+        </apex:actionFunction>
+        <apex:repeat value="{!mappingTypes}" var="mappingType" id="theRepeat">
+            <apex:PageBlock mode="detail" id="thePageBlock" title="{!SUBSTITUTE($Label.etablack__Object_mapping,'{ON}',$ObjectType[mappingType].Label)}">
+                <apex:pageBlockButtons location="bottom">
+                    <apex:outputPanel styleClass="btn" style="padding:5px;" onclick="if ((Modal.confirm && Modal.confirm(LC.getLabel('Global', 'are_you_sure'))) || 
+                        (!Modal.confirm && window.confirm(LC.getLabel('Global', 'are_you_sure')))) deleteMapping('{!mappingType}');">{!SUBSTITUTE($Label.etablack__Object_mapping_delete,'{ON}',$ObjectType[mappingType].Label)}...</apex:outputPanel>
+                </apex:pageBlockButtons>
+                <!--BEGIN TRIGGER SECTION -->
+                <apex:variable value="{!typeTriggers[mappingType]}" var="triggerVar" />
+                <apex:pageBlock title="{!$ObjectType[mappingType].Label} triggers" mode="detail">
+                    <apex:pageBlockButtons location="top">
+                        <apex:outputPanel styleClass="btn" style="padding:5px;" rendered="{!triggerVar.empty}" 
+                            onclick="if(createTrigger('{!JSENCODE(mappingType)}'))document.location.href=document.location.href;">{!SUBSTITUTE($Label.etablack__New_trigger,'{ON}',$ObjectType[mappingType].Label)}</apex:outputPanel>
+                    </apex:pageBlockButtons>
+                    <apex:PageBlockSection columns="1" collapsible="false">
+                        <apex:pageBlockSectionItem >
+                            <apex:pageBlockTable value="{!typeTriggers[mappingType]}" var="tr" id="theTriggersTable" style="width:100%">
+                                <apex:column headerValue="{!$Label.etablack__Action}" width="5%" styleClass="actionColumn">
+                                    <apex:outputLink value="{!URLFOR('/setup/build/editApexTrigger.apexp',null,[id=tr.id])}" styleClass="actionLink" target="_EditTrigger">{!$Label.etablack__Edit}</apex:outputLink>
+                                    &nbsp;|&nbsp;
+                                    <apex:outputLink value="{!URLFOR('/setup/own/deleteredirect.jsp',null,[delID=MID(tr.Id,1,15),retURL=$Page.ETAblack__Workforce2_SettingsPage])}" styleClass="actionLink">{!$Label.etablack__Delete}</apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="{!$ObjectType.ApexTrigger.Fields.Status.Label}" value="{!tr.Status}" style="width:5%;" />
+                                <apex:column headerValue="{!$ObjectType.ApexTrigger.Fields.Name.Label}" style="width:70%;font-weight:bold;padding-left:15px;padding-right:15px;">
+                                    <apex:outputLink value="{!URLFOR('/'+tr.id)}" target="_ViewTrigger">{!tr.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="{!$ObjectType.ApexTrigger.Fields.LastModifiedById.Label}" value="{!tr.LastModifiedById}" style="width:5%" />
+                                <apex:column headerValue="{!$ObjectType.ApexTrigger.Fields.LastModifiedDate.Label}" value="{!tr.LastModifiedDate}" style="width:5%" />
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSectionItem>
+                    </apex:PageBlockSection>
+                </apex:PageBlock>
+                <!--END TRIGGER SECTION -->
+                <!--BEGIN MAPPING FIELDS -->
+                <apex:pageBlock title="{!$Label.etablack__Activity_fields_mapping}" mode="detail">
+                    <apex:pageBlockButtons location="top">
+                        <div style="margin-left:-60px;margin-top:20px">                                
+                            <apex:commandLink style="padding:5px;color:#015BA7;" 
+                                            action="{!URLFOR($Page.Workforce2_ImportFieldsPage,null,['entity'=mappingType,'retURL'=$Page.Workforce2_SettingsPage])}" 
+                                            value="{!SUBSTITUTE($Label.etablack__Import_from,'{PN}',$Label.etablack__TOAproductName)}..." />
+            
+                             <apex:outputLink style="padding:5px;color:#015BA7" onclick="window.open('{!URLFOR('/p/setup/field/NewCustomFieldStageManager',null,
+                                        ['entity'=CASE(mappingType,'Event','Activity','Task','Activity',mappingType)])}','_createObjField')">{!SUBSTITUTE($Label.etablack__Create_field,'{ON}',$ObjectType[mappingType].Label)}...</apex:outputLink>
+                             <apex:outputLink style="padding:5px;color:#015BA7" onclick="window.open('{!URLFOR('/p/setup/field/NewCustomFieldStageManager',null,
+                                        ['entity'=amEnt,'setupid'='CustomObjects'])}','_createAMField')">{!SUBSTITUTE($Label.etablack__Create_field,'{ON}',$ObjectType.ETAblack__Workforce2_ActivityMessage__c.Label)}...</apex:outputLink>
+                        </div>
+                    </apex:pageBlockButtons>
+                    <apex:PageBlockSection columns="1">
+                        <apex:pageBlockTable value="{!AllActivityFieldMapping[mappingType]}" var="amf">
+                            <apex:column headerValue="{!$Label.etablack__Action}" width="8%" styleClass="actionColumn" style="padding:5px;">
+                               <apex:commandLink action="{!URLFOR($Page.Workforce2_MappingFieldPage,null,
+                                        ['name'=activityMessageFieldsInfo[amf.Name&'Name'],'entity'=mappingType,'retURL'=$Page.Workforce2_SettingsPage])}" 
+                                        rendered="{!amf.Id==null}" styleClass="actionLink">{!$Label.etablack__Create}</apex:commandLink>
+
+                                <apex:outputPanel rendered="{!AND(amf.Id!=null,amf.Name!='appt_number__c')}">
+                                    <apex:commandLink action="{!URLFOR($Page.Workforce2_MappingFieldPage,amf.Id,['id'=amf.Id,'entity'=mappingType,'retURL'=$Page.Workforce2_SettingsPage])}" 
+                                        styleClass="actionLink">{!$Label.etablack__Edit}</apex:commandLink>
+                                    &nbsp;|&nbsp;
+                                    <apex:commandLink action="{!URLFOR($Action.Workforce2_MappingFields__c.Delete,amf.Id,['retURL'=$Page.Workforce2_SettingsPage])}" styleClass="actionLink" 
+                                        rerender="theRepeat" onclick="if (!(Modal.confirm && Modal.confirm(LC.getLabel('Global', 'are_you_sure'))) &&
+                                            !(!Modal.confirm && window.confirm(LC.getLabel('Global', 'are_you_sure')))) return false;">{!$Label.etablack__Delete}</apex:commandLink>
+                                    &nbsp;|&nbsp;
+                                    <apex:outputLink target="_blank" value="{!URLFOR($Page.ETAblack__Workforce2_MappingDictionaryPage,null,['dsfn'=amf.Name,'objname'=mappingType])}" 
+                                        styleClass="{!IF(amf.HasDictionary,'','actionLink')}">{!$Label.etablack__Dictionary}</apex:outputLink>
+                                </apex:outputPanel>
+                            </apex:column>                            
+                            <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.Fields.ETAblack__MessageField__c.Label}"  
+                                value="{!activityMessageFieldsInfo[amf.Name&'Name']}" width="25%" 
+                                style="font-weight:bold;padding-left:15px;padding-right:15px;" />
+                            <apex:column headerValue="{!$Label.etablack__Label}"  value="{!activityMessageFieldsInfo[amf.Name&'Label']}" width="25%" 
+                                style="font-weight:bold;padding-left:15px;padding-right:15px;" />
+                            <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.Fields.ETAblack__Direction__c.Label}" width="5%" value="{!amf.Direction}" 
+                                style="padding-left:15px;padding-right:15px;" />
+                            <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.Fields.ETAblack__MappingMethod__c.Label}" width="5%" value="{!amf.MappingMethod}" 
+                                style="padding-left:15px;padding-right:15px;" />     
+                            <apex:column headerValue="{!$ObjectType.ETAblack__Workforce2_MappingFields__c.Fields.ETAblack__LinkedTypeField__c.Label}" value="{!amf.LinkedTypeField}" 
+                                style="padding-left:15px;padding-right:15px;" />
+                                                           
+                        </apex:pageBlockTable>
+                    </apex:PageBlockSection>
+                </apex:pageBlock>
+                <!--END MAPPING FIELDS -->
+            </apex:PageBlock>
+        </apex:repeat>
+        <!--END MAPPED CLASSES -->
+    </apex:PageBlock>
+</apex:form>
+<!--BEGIN TOOLBAR -->
+<style type="text/css">
+    .toatoolbar {
+    background-color: #F28411;
+    background-image:none !important;
+    height: 2.5em;
+    }
+    .toatoolbar td {
+    vertical-align: middle;
+    }
+    .toatoolbar a {
+    color: #7D3520;
+    }
+    .rounded {
+    -moz-border-radius: 1em;
+    border-radius: 1em;
+    -webkit-border-radius: 1em;
+    }
+    .shadowed {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+</style>
+<apex:toolbar id="theToolbar" itemSeparator="grid" contentClass="rounded" separatorClass="separator" contentStyle="vertical-align:middle" styleClass="toatoolbar rounded shadowed" rendered="{!viewOnly}">
+    <apex:outputText value="{!$Label.etablack__ProductName} Toolbar" />
+    <apex:toolbarGroup id="toobarGroupLinks">
+        <apex:outputLink value="http://toatech.com/{!$Label.etablack__ProductName}">{!$Label.etablack__ProductName}</apex:outputLink>
+        <apex:outputLink value="mailto:tech.support@toatech.com?subject={!$Label.etablack__ProductName}%20question%20from%20{!settings['InstanceName'].Value__c}">{!$Label.etablack__Support}</apex:outputLink>
+    </apex:toolbarGroup>
+    <apex:toolbarGroup >
+        <apex:outputLink value="http://developer.salesforce.com">{!$Label.etablack__Apex_dev_network}</apex:outputLink>
+    </apex:toolbarGroup>
+    <apex:toolbarGroup location="right">
+        <apex:outputLink value="http://toatech.com" style="color:blue">{!$Label.etablack__Full_company_name}</apex:outputLink>
+    </apex:toolbarGroup>
+</apex:toolbar>
+<!--END TOOLBAR -->
+</apex:page>

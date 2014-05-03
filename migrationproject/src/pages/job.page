@@ -1,0 +1,44 @@
+<apex:page standardController="Job_Applicaton__c">
+  <apex:variable value="{!Job_Applicaton__c}" var="job"/>
+  <apex:variable value="{!Job_Applicaton__c.Candidate__r.Field__r.Fieldcheck__r}" var="candidate"/>
+  <apex:sectionHeader title="{!$ObjectType.Job_Applicaton__c.label}" subtitle="{!job.name}"/>
+  <apex:form >
+    <apex:pageBlock title="Job Application Detail">
+    
+   
+      <apex:pageBlockSection >
+        <apex:outputField value="{!job.name}"/>
+        <apex:outputField value="{!job.ownerId}"/>
+        <apex:outputField value="{!job.Candidate__c}"/>
+        <apex:outputField value="{!job.Status__c}"/>
+        <apex:outputField value="{!job.Position__c}"/>
+        
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Created By"/>
+          <apex:outputText > 
+            <apex:outputField value="{!job.CreatedById}"/>
+            , &nbsp;
+            <apex:outputField value="{!job.CreatedDate}"/>
+          </apex:outputText>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Last Modified By"/>
+          <apex:outputText > 
+            <apex:outputField value="{!job.LastModifiedById}"/>
+            , &nbsp;
+            <apex:outputField value="{!job.LastModifiedDate}"/>
+          </apex:outputText>
+        </apex:pageBlockSectionItem>
+      </apex:pageBlockSection>
+      <apex:pageBlockSection title="Candidate Information">
+        <apex:outputField value="{!job.Candidate__c}"/>
+        
+       
+      </apex:pageBlockSection>
+    </apex:pageBlock>
+  </apex:form>
+  <apex:relatedList list="OpenActivities"/>
+  <apex:relatedList list="ActivityHistories"/>
+  <apex:relatedList list="NotesAndAttachments"/>
+ 
+</apex:page>

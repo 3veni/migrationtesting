@@ -1,0 +1,59 @@
+<apex:page standardController="ETAblack__Workforce2_MappingDictionary__c" extensions="ETAblack.Workforce2_SettingsDictionaryCtrl"
+    id="thePage" 
+
+    title="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.LabelPlural} {!$ObjectType.ETAblack__Workforce2_ActivityMessage__c.Fields[MessageFieldName].Label} {!IF($CurrentPage.parameters.new=='true',$Label.etablack__New,$Label.etablack__Edit)}">
+<apex:sectionHeader title="{!$Label.etablack__ProductName} v{!PackageVersion}" 
+    subtitle="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.LabelPlural} {!$ObjectType.ETAblack__Workforce2_ActivityMessage__c.Fields[MessageFieldName].Label} {!IF($CurrentPage.parameters.new=='true',$Label.etablack__New,$Label.etablack__Edit)}"
+    help="{!URLFOR($Page.ETAblack__Workforce2_HelpPage,null,['id'='MappingDictionaryItem'])}"
+/>
+<!--     tabStyle="WorkforceTab__tab" -->
+<apex:form id="theForm">
+    <apex:pageMessages id="theMesssages" />
+    <apex:pageBlock mode="edit" id="theBlock">
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton action="{!save}"   style="padding:5px;" value="{!$Label.etablack__Save}"  />
+            <apex:commandButton action="{!cancel}" style="padding:5px;" value="{!$Label.etablack__Cancel}" />
+        </apex:pageBlockButtons>
+        <apex:outputField value="{!ETAblack__Workforce2_MappingDictionary__c.ETAblack__Linkedtype__c}" rendered="false" />
+        <apex:outputField value="{!ETAblack__Workforce2_MappingDictionary__c.ETAblack__MessageFieldName__c}" rendered="false" />
+        <apex:pageBlockSection columns="1" id="theSection">
+            <apex:PageBlockSectionItem id="theSFNVSection">
+                <apex:outputPanel >
+                    <apex:outputLabel value="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__LinkedTypeFieldValue__c.Label}" 
+                        for="theSFNV" rendered="{!ETAblack__Workforce2_MappingDictionary__c.ETAblack__ToMessage__c}" />
+                    <apex:outputLabel value="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__MessageFieldValue__c.Label}" 
+                        for="theSFNV" rendered="{!!ETAblack__Workforce2_MappingDictionary__c.ETAblack__ToMessage__c}" />
+                </apex:outputPanel>
+                <apex:outputPanel id="theSFNVPanel">
+                    <div class="requiredInput">
+                        <div class="requiredBlock"> </div>
+                        <apex:inputField value="{!ETAblack__Workforce2_MappingDictionary__c.ETAblack__LinkedTypeFieldValue__c}" id="theSFNV"
+                             style="width:300px" Label="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__LinkedTypeFieldValue__c.Label}" required="true" />
+                    </div>
+                </apex:outputPanel>
+            </apex:PageBlockSectionItem>
+            <apex:PageBlockSectionItem id="theDFVSection">
+                <apex:outputPanel >
+                    <apex:outputLabel value="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__LinkedTypeFieldValue__c.Label}" 
+                        for="theSFNV" rendered="{!!ETAblack__Workforce2_MappingDictionary__c.ETAblack__ToMessage__c}" />
+                    <apex:outputLabel value="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__MessageFieldValue__c.Label}" 
+                        for="theSFNV" rendered="{!ETAblack__Workforce2_MappingDictionary__c.ETAblack__ToMessage__c}" />
+                </apex:outputPanel>
+                <apex:outputPanel id="theDFVPanel">
+                    <div class="requiredInput">
+                        <div class="requiredBlock"> </div>
+                        <apex:inputField value="{!ETAblack__Workforce2_MappingDictionary__c.ETAblack__MessageFieldValue__c}" id="theDFV" 
+                            style="width:300px" Label="{!$ObjectType.ETAblack__Workforce2_MappingDictionary__c.Fields.ETAblack__MessageFieldValue__c.Label}" required="true" />
+                    </div>
+                </apex:outputPanel>
+            </apex:PageBlockSectionItem>
+            <apex:PageBlockSectionItem id="theReverseFlagSection">
+                <apex:outputLabel value="{!$Label.etablack__Add_reverse_mapping}" for="theReverseFlag" />
+                <apex:outputPanel id="theReverseFlagPanel">
+                    <apex:inputCheckBox value="{!addReverse}" id="theReverseFlag" style="width:300px" Label="{!$Label.etablack__Add_reverse_mapping}" />
+                </apex:outputPanel>
+            </apex:PageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

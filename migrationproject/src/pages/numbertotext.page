@@ -1,0 +1,8 @@
+<apex:page controller="numbertotextcls">
+<apex:pageMessages / >
+
+<apex:form >
+ <apex:inputtext value="{!num}"/>
+ <apex:commandbutton value="ok" action="{!ok}"/>
+ </apex:form>
+</apex:page>

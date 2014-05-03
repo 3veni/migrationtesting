@@ -1,0 +1,529 @@
+<apex:page controller="TOA.ETAworkforceSettingsController" extensions="TOA.ETAworkforceEditSimpleMappingController" title="ETAworkforce Settings Edit" id="thePage" 
+        setup="{!IF($CurrentPage.parameters.setup=="true",true,false)}"  
+        sidebar="{!IF($CurrentPage.parameters.sidebar=="false",false,true)}" 
+        tabStyle="ETAworkforceTab__tab" 
+        deferLastCommandUntilReady="true">
+    <apex:sectionHeader title="ETAworkforce v{!PackageVersion}" subtitle="Settings Edit" help="{!$Page.TOA__ETAworkforceSettingsHelpPage}"/>
+
+    <script language="JavaScript" type="text/javascript">
+      setCookie('sid_sidebar','{!GETSESSIONID()}');
+    </script>
+    <script src="/soap/ajax/23.0/connection.js" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jqueryui,'jquery-1.6.4.js')}" language="JavaScript" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.TOAUtils)}" language="JavaScript" type="text/javascript"></script>
+    <script type="text/javascript">
+        var inportWin=null;
+        function openImportLookupPopup()
+        {
+            inportWin=window.open('{!$Page.ETAworkforceImportSettings}', '_Import','width=800,height=300,resizable=yes,toolbar=no,status=no,scrollbars=yes,menubar=no,directories=no,location=no,dependant=no' , true, true)
+            if (window.focus)
+            {
+                 inportWin.focus();
+            }
+            return false;
+        }
+        function ImportDocument(id,bodiesJSON,zippedFields)
+        {
+            if (null!=inportWin)
+            {
+               inportWin.close();
+            }  
+
+            document.getElementById('processIcon').style.visibility='visible';
+            if(zippedFields!=undefined && zippedFields!=null && zippedFields!='')
+            {
+                importNotificationFieldsZip("{!GETSESSIONID()}",zippedFields);
+            }
+            if(bodiesJSON!='')
+            {
+                var output=document.getElementById('triggerMsg');
+                var tbl=document.getElementById('triggerMsgTable');
+                tbl.style.display='none'; 
+            
+                var bodies=decode(bodiesJSON).bodies;
+
+                createTrigger("{!GETSESSIONID()}",bodies,output,tbl);
+            }
+            var idValue=document.getElementById('{!$Component.thePage:theForm:thePageBlock:importDocumentId}');
+            if(idValue)
+                idValue.value=id;
+            
+            importSettings();
+        }
+        var localAdvanced={!IF(settings.AdvancedMode__c==true,"true","false")};
+        function UpdateSimpleMappingDisplay()
+        {
+            $('.AdvancedMode').css('display',(localAdvanced?'':'none'));
+        }
+
+        $(document).ready(function()
+        {
+            var el=document.getElementById('{!$Component.thePage.theForm.thePageBlock.theBlock.thePwdSection.thePwd}');if(el)el.setAttribute('autocomplete','off');
+            document.getElementById("{!updateMethod}").style.display='';
+            document.getElementById("{!updateMethodFuture}").style.display='';
+            UpdateSimpleMappingDisplay();
+        });
+            
+    </script>
+
+    <apex:form id="theForm">
+        <apex:PageBlock mode="maindetail" id="thePageBlock" >
+            <apex:pageBlockButtons location="top">
+                <img src="/img/loading.gif" style="visibility:hidden" id="processIcon"/>
+                <apex:actionStatus id="mainStatus"
+                    onstart="document.getElementById('processIcon').style.visibility='visible'" onstop="document.getElementById('processIcon').style.visibility='hidden'">
+                </apex:actionStatus>
+
+                <apex:actionFunction name="Save" action="{!saveSettings}"
+                    status="mainStatus" />
+                <apex:outputPanel onclick="document.getElementById('processIcon').style.visibility='visible';CreateTrigger() && CreateEmailService() && Save();document.getElementById('processIcon').style.visibility='hidden'"
+                    styleClass="btn" style="padding:5px;">Save</apex:outputPanel>
+
+                <apex:actionFunction name="Export" action="{!exportSettings}"
+                    rerender="theMesssages" status="mainStatus">
+                    <apex:param name="exportDescription"
+                        assignTo="{!exportDescription}" value="" />
+                    <apex:param name="exportZippedFields"
+                        assignTo="{!exportZippedFields}" value="" />
+                </apex:actionFunction>
+                <apex:actionFunction name="sendSettings" action="{!sendSettings}"
+                    rerender="theMesssages" status="mainStatus">
+                    <apex:param name="sendDocumentId" assignTo="{!sendDocumentId}"
+                value="" />
+                </apex:actionFunction>
+                <apex:outputPanel onclick="var res=prompt('Enter description','{!JSENCODE(settings.00N90000007MeYs)}');if(res!=null)Export(res,getNotificationFieldsZip('{!GETSESSIONID()}'));"
+                    styleClass="btn" style="padding:5px;">Export...</apex:outputPanel>
+                    
+                <apex:actionFunction name="importSettings" action="{!importSettings}" status="mainStatus">
+                </apex:actionFunction>
+                <apex:outputPanel onclick="openImportLookupPopup();"
+                    styleClass="btn" style="padding:5px;">Import...</apex:outputPanel>
+                    
+                <apex:actionFunction name="Cancel" action="{!cancel}"
+                    rerender="theMesssages" />
+                <apex:outputPanel onclick="Cancel()" styleClass="btn" style="padding:5px;">Cancel</apex:outputPanel>
+
+            </apex:pageBlockButtons>
+
+            <apex:inputHidden id="importDocumentId" value="{!importDocumentId}"/>
+<br/>
+            <apex:PageMessages id="theMesssages" escape="false"/>
+            <apex:PageMessage severity="warning" strength="3" rendered="{!needCompile}" escape="false" id="theCompileMessage">
+                <h1>You can&#39;t Save settings.</h1>Please click <h1>Compile all classes</h1> on the <h1><a href="/01p" onclick="document.getElementById('{!$Component.thePage.theForm.thePageBlock.theCompileMessage}').style.display='none'" target="_blank">Apex Classes</a></h1> page to compile all the Apex classes in your organization.
+            </apex:PageMessage>    
+            <apex:pageBlockSection id="theFinishImportMessageBlock" columns="1">
+            <apex:PageMessage summary="To finish import click 'Save'." severity="confirm" strength="3" rendered="{!Imported}"/>
+            </apex:pageBlockSection>
+                
+            <table id="triggerMsgTable" cellspacing="0" cellpadding="0"
+                border="0" style="display: none">
+                <colgroup span="3"></colgroup>
+                <tbody>
+                    <tr>
+                        <td style="vertical-align: middle;"><img
+                            src="/img/approvals/stopsign_16x16.gif" alt="Error" title="Error" />
+                        </td>
+                        <td id="triggerMsg"
+                            style="vertical-align: middle; font-weight: bold; color: red;"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="emailServiceMsgTable" cellspacing="0" cellpadding="0"
+                border="0" style="display: none">
+                <colgroup span="3"></colgroup>
+                <tbody>
+                    <tr>
+                        <td style="vertical-align: middle;"><img
+                            src="/img/approvals/stopsign_16x16.gif" alt="Error" title="Error" />
+                        </td>
+                        <td id="emailServiceMsg"
+                            style="vertical-align: middle; font-weight: bold; color: red;"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <apex:PageBlockSection title="General information" columns="1"
+                collapsible="false">
+                <apex:outputField value="{!settings.Name}" />
+                <apex:outputField value="{!settings.LastModifiedDate}" />
+                <apex:outputField value="{!settings.CreatedDate}" />
+                <apex:outputField value="{!settings.LastModifiedById}" />
+                <apex:inputField value="{!settings.00N90000007MeYs}"
+                    style="width:80%;max-width:700px" />
+            </apex:PageBlockSection>
+
+            <apex:PageBlockSection title="Interface settings" columns="1"
+                id="theBlock" collapsible="false">
+                <apex:PageBlockSectionItem id="theSection">
+                    <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeYw.Label}" for="theETAdirectUrl" />
+                    <apex:outputPanel >
+                        <div class="requiredInput">
+                            <div class="requiredBlock"> </div>
+                            <apex:inputText id="theETAdirectUrl" value="{!settings.00N90000007MeYw}" style="width:300px" required="true" 
+                                label="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeYw.Label}"/>
+                            <apex:outputPanel onclick=" window.open('/0rp/e?SiteName=ETAworkforce&EndpointUrl='+document.getElementById('{!$Component.thePage.theForm.thePageBlock.theBlock.theSection.theETAdirectUrl}').value,'_SiteAccess')" styleClass="btn" style="padding:5px;">Enable site access...</apex:outputPanel>
+                        </div>        
+                </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+                <apex:inputField value="{!settings.00N90000007MeYr}" style="width:300px" />
+                <apex:inputField value="{!settings.00N90000007MeZ0}" style="width:300px" />
+                <apex:PageBlockSectionItem id="thePwdSection">
+                <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZ4.Label}" for="theETAdirectUrl" />
+                <apex:outputPanel id="thePwdPanel">
+                    <div class="requiredInput">
+                        <div class="requiredBlock"> </div>
+                        <apex:inputSecret value="{!uiPassword}" id="thePwd" 
+                            style="width:300px"
+                            Label="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZ4.Label}"
+                            required="true" redisplay="true" />
+                     </div>                        
+                </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+            </apex:PageBlockSection>
+            
+           
+            <apex:PageBlockSection title="Update method" columns="1"
+                id="theSection" collapsible="false">
+                 <apex:PageBlockSectionItem id="theSection1">
+                    <apex:OutputLabel value="For today" for="theTodayMethods" />
+                    <apex:outputPanel >
+                        <apex:selectRadio value="{!updateMethod}" id="theTodayMethods"
+                            layout="pageDirection" onchange="$('.HiddenMethod').css('display','none');document.getElementById(this.value).style.display='';">
+                            <apex:selectOption itemValue="SynchronousUpdate__c" itemLabel="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['SynchronousUpdate__c'].Label}"/>
+                            <apex:selectOption itemValue="AsynchronousUpdate__c" itemLabel="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['AsynchronousUpdate__c'].Label}"/>
+                            <apex:selectOption itemValue="DisableUpdate__c" itemLabel="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['DisableUpdate__c'].Label}"/>
+                        </apex:selectRadio>
+                        
+                        <div id="SynchronousUpdate__c" style="display:none;width:80%;max-width:700px" class="HiddenMethod"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['SynchronousUpdate__c'].inlineHelpText}" severity="info" strength="2"
+                           escape="false" />
+                        </div>
+                        <div id="AsynchronousUpdate__c" style="display:none;width:80%;max-width:700px" class="HiddenMethod"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['AsynchronousUpdate__c'].inlineHelpText}" severity="info" strength="2"
+                           escape="false" />
+                        </div>
+                        <div id="DisableUpdate__c" style="display:none;width:80%;max-width:700px" class="HiddenMethod"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['DisableUpdate__c'].inlineHelpText}" severity="info" strength="2"
+                           escape="false" />
+                        </div>
+                    </apex:outputPanel>
+
+                </apex:PageBlockSectionItem>
+
+                <apex:PageBlockSectionItem id="theSection2">
+                    <apex:OutputLabel value="For future" for="theFutureMethods" />
+                    <apex:outputPanel >
+                        <apex:selectRadio value="{!updateMethodFuture}"
+                            id="theFutureMethods" layout="pageDirection"  onchange="$('.HiddenMethodFuture').css('display','none');document.getElementById(this.value).style.display='';">
+                            <apex:selectOption itemValue="SynchronousUpdateFuture__c" itemLabel="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['SynchronousUpdateFuture__c'].Label}"/>
+                            <apex:selectOption itemValue="AsynchronousUpdateFuture__c" itemLabel="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['AsynchronousUpdateFuture__c'].Label}"/>
+                            <apex:selectOption itemValue="DisableUpdateFuture__c" itemLabel="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['DisableUpdateFuture__c'].Label}"/>
+                        </apex:selectRadio>
+                        
+                        <div id="SynchronousUpdateFuture__c" style="display:none;width:80%;max-width:700px" class="HiddenMethodFuture"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['SynchronousUpdateFuture__c'].inlineHelpText}" severity="info" strength="2"
+                           escape="false" />
+                        </div>
+                        <div id="AsynchronousUpdateFuture__c" style="display:none;width:80%;max-width:700px" class="HiddenMethodFuture"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['AsynchronousUpdateFuture__c'].inlineHelpText}" severity="info" strength="2"
+                           escape="false" />
+                        </div>
+                        <div id="DisableUpdateFuture__c" style="display:none;width:80%;max-width:700px" class="HiddenMethodFuture"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.fields['DisableUpdateFuture__c'].inlineHelpText}" severity="info" strength="2"
+                           escape="false" />
+                        </div>
+                    </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+
+            </apex:PageBlockSection>
+
+            <apex:PageBlockSection title="Error reporting method" columns="1"
+                collapsible="false">
+                <apex:PageBlockSectionItem >
+                    <apex:OutputLabel value="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZB.Label}"
+                        for="theChatter" />
+                    <apex:outputPanel >
+                        <apex:inputField value="{!settings.00N90000007MeZB}" id="theChatter" />
+                        <div style="width:80%;max-width:700px"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZB.inlineHelpText}"
+                            severity="info" strength="2" escape="false" /></div>
+                    </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+                <apex:PageBlockSectionItem >
+                    <apex:OutputLabel value="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZD.Label}"
+                        for="theNotes" />
+                    <apex:outputPanel >
+                        <apex:inputField value="{!settings.00N90000007MeZD}" id="theNotes" />
+                        <div style="width:80%;max-width:700px"><apex:pageMessage summary="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZD.inlineHelpText}"
+                            severity="info" strength="2" escape="false" /></div>
+                    </apex:outputPanel>
+                </apex:PageBlockSectionItem>
+
+            </apex:PageBlockSection>
+
+            <apex:outputPanel id="theEmailServicePanel">
+                <apex:actionFunction name="reloadEmailService" action="{!dummy}"
+                    rerender="theEmailService, theEmailServiceUser"/>
+                <apex:variable var="emailserv" value="{!EmailService}" />
+                <script type="text/javascript">
+                    function CreateEmailService()
+                    {
+                       var session='{!GETSESSIONID()}';
+                       var msg=document.getElementById('emailServiceMsg');
+                       var msgTbl=document.getElementById('emailServiceMsgTable');
+                       var currentUser={Email:'{!JSENCODE(currentUser.Email)}',ProfileId:'{!JSENCODE(currentUser.ProfileId)}',
+                            TimeZoneSidKey:'{!JSENCODE(currentUser.TimeZoneSidKey)}',LocaleSidKey:'{!JSENCODE(currentUser.LocaleSidKey)}',
+                            EmailEncodingKey:'{!JSENCODE(currentUser.EmailEncodingKey)}',LanguageLocaleKey:'{!JSENCODE(currentUser.LanguageLocaleKey)}'};
+                       var user='{!JSENCODE(emailserv.RunAsUserId)}';
+                       
+                    
+                       var servId;
+                       var success=false;
+      
+                       if('{!emailserv.func}'=='')
+                          servId=createEmailService(session,'{!JSENCODE(emailserv.ApexClassId)}','{!JSENCODE(errorRoutingEmail)}',msg,msgTbl);
+                       else
+                          servId='{!JSENCODE(emailserv.func.Id)}';
+                       if(servId==null)
+                          return false;
+
+                       if(
+                       getElementByIdCS('{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkid')!=null &&
+                       getElementByIdCS('{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkid').value!=null &&
+                       getElementByIdCS('{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkid').value!='')
+                         user=getElementByIdCS('{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkid').value;
+                       
+                       if(user=='')
+                          return false;
+        
+                       if('{!emailserv.addr}'=='')
+                          return createEmailAddress(session,servId,user,msg,msgTbl);
+                       else
+                          return true;
+                       return false;
+                    }
+                </script>
+                <apex:PageBlockSection title="Email service" columns="1"
+                    id="theEmailServiceUser" collapsible="false"
+                    rendered="{!emailserv.needCreate==true}">
+                    <apex:PageBlock mode="maindetail" id="theEmailServicePage">
+                       <apex:variable var="lookupScript" value="javascript: openLookup('/_ui/common/data/LookupPage?lkfm={!$Component.thePage.theForm}&lknm={!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}&lktp=StandardUserLookup',
+                           670,'1','&lksrch='+
+                           escapeUTF(getElementByIdCS('{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}').value.substring(0, 80)))" />
+                            <input type="hidden" name="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkold" 
+                              id="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkold" 
+                              value="{!emailserv.EmailServiceUser.Name}"/>
+                            <input type="hidden" name="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkid" 
+                              id="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkid" 
+                              value="{!emailserv.EmailServiceUser.Id}"/>
+                            <input type="hidden" name="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lktp" 
+                              value="StandardUserLookup"/>
+                            <input type="hidden" name="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lspf" 
+                              id="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lspf" value="0"/>
+                            <input type="hidden" name="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lspfsub" 
+                              id="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lspfsub" value="0"/>
+                            <input type="hidden" name="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_mod" 
+                              id="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_mod" value="0"/>
+                         <apex:PageBlockSection columns="1" id="theEmailUserSection">
+                           <apex:PageBlockSectionItem id="theEmailUserItem">
+                                    <apex:outputLabel value="Context user" for="theEmailUserInput"/>
+                                    <apex:outputPanel >
+                                        <div class="requiredInput">
+                                            <div class="requiredBlock"></div>
+                                            <apex:inputText id="theEmailUserInput"  value="{!emailserv.EmailServiceUser.Name}" required="true" styleClass="requiredInput" label="Email service context user"
+                                                onchange="getElementByIdCS('{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkid').value='';getElementByIdCS('{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_mod').value='1';" size="20"/>
+                                            <script type="text/javascript">new ForeignKeyInputElement("{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}","/_ui/common/data/LookupValidationServlet",null,true,{"acent":"005"});</script>
+                                            <a href="{!lookupScript}" 
+                                              id="{!$Component.thePage.theForm.thePageBlock.theEmailServiceUser.theEmailServicePage.theEmailUserSection.theEmailUserItem.theEmailUserInput}_lkwgt" 
+                                              onclick="setLastMousePosition(event)" 
+                                              title="Context User Lookup (New Window)">
+                                              <img src="/s.gif" alt="Context User Lookup (New Window)" 
+                                                  class="lookupIcon" onblur="this.className = 'lookupIcon';" 
+                                                  onfocus="this.className = 'lookupIconOn';" 
+                                                  onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+                                                  onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+                                                  title="Context User Lookup (New Window)" 
+                                               /></a>
+                                            <apex:outputPanel onclick="window.open('/005/e?Username={!$Organization.Id}.etaworkforce@email.service&name_lastName=ETAworkforce&Alias=etawems&Email={!$User.Email}&CommunityNickname={!$Organization.Id}@etawems&Profile={!LEFT(SAProfile.Id,15)}&user_license_id={!LEFT(SAProfile.UserLicenseId,15)}', '_CreateUser')" styleClass="btn" style="padding:5px;">Create new</apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                            </apex:PageBlockSectionItem>
+                       </apex:PageBlockSection>
+                    </apex:PageBlock>
+                </apex:PageBlockSection>
+                <apex:PageBlockSection title="Email service" columns="1"
+                    id="theEmailService" collapsible="false"
+                    rendered="{!emailserv.needCreate==false}">
+                    <apex:PageBlock mode="maindetail" id="theEmailServicePage">
+                        <apex:pageBlockButtons location="top">
+                            <apex:outputPanel onclick="window.open('{!URLFOR('/'+emailserv.RunAsUserId+'/e',null,[id=emailserv.RunAsUserId])}','_EmailService')"
+                                styleClass="btn" style="padding:5px;" rendered="{!(emailserv.RunAsUserId!='')}">Edit service user...</apex:outputPanel>
+                            <apex:outputPanel onclick="window.open('{!URLFOR('/email/admin/editEmailServicesFunction.apexp',null,[id=emailserv.func.Id])}','_EmailService')"
+                                styleClass="btn" style="padding:5px;" rendered="{!(emailserv.func!='')}">Edit service function...</apex:outputPanel>
+                            <apex:outputPanel onclick="window.open('{!URLFOR('/email/admin/editEmailServicesAddress.apexp',null,[id=emailserv.addr.Id])}','_EmailService')"
+                                styleClass="btn" style="padding:5px;" rendered="{!(emailserv.addr!='')}">Edit service address...</apex:outputPanel>
+                        </apex:pageBlockButtons>
+                        <apex:PageBlockSection columns="1" id="theEmailUserSection">
+                            <apex:PageBlockSectionItem >
+                                <apex:outputLabel value="{!$ObjectType.EmailServicesFunction.fields.FunctionName.Label}"
+                                    for="theFunctionLink" />
+                                <apex:outputLink id="theFunctionLink"
+                                    value="{!URLFOR('/email/admin/detailEmailServicesFunction.apexp',null,[id=emailserv.func.Id])}">{!emailserv.func.FunctionName}</apex:outputLink>
+                            </apex:PageBlockSectionItem>
+                            <apex:outputField value="{!emailserv.func.ErrorRoutingAddress}" />
+                            <apex:outputField value="{!emailserv.addr.AuthorizedSenders}" />
+                            <apex:PageBlockSectionItem >
+                                <apex:outputLabel value="{!$ObjectType.EmailServicesAddress.fields.LocalPart.Label}"
+                                    for="theAddressLink" />
+                                <apex:outputPanel >
+                                    <apex:outputLink value="mailto:{!emailserv.addr.LocalPart}@{!emailserv.addr.EmailDomainName}"
+                                            id="theAddressLink">{!emailserv.addr.LocalPart}@{!emailserv.addr.EmailDomainName}</apex:outputLink>
+                                    <div class="mouseOverInfoOuter" onfocus="addMouseOver(this)" onmouseover="addMouseOver(this)" tabindex="0">
+                                        <img src="/s.gif" alt="" class="infoIcon" title=""/><div class="mouseOverInfo" style="opacity: 0; display: none; ">
+                                        <h1>This email is used as static email address for ETAdirect message step recepient.</h1></div>
+                                    </div>
+                                </apex:outputPanel>
+                            </apex:PageBlockSectionItem>
+
+                            <apex:outputField value="{!emailserv.addr.RunAsUserId}" ><div class="mouseOverInfoOuter" onfocus="addMouseOver(this)" onmouseover="addMouseOver(this)" tabindex="0">
+                                <img src="/s.gif" alt="" class="infoIcon" title=""/><div class="mouseOverInfo" style="opacity: 0; display: none; ">
+                                    <h1>Please set the "Modify All Data" permission in the user profile to avoid sharing rules.</h1> If this has access to data via a sharing rule, then the API must issue an extra query to check access. In general, fewer sharing rules quickens load speeds, as there are fewer operations that have to be performed when setting properties such as ownership.</div>
+                                    </div>
+                            </apex:outputField>
+
+                        </apex:PageBlockSection>
+                        <apex:PageBlockSection columns="1">
+                            <apex:inputField value="{!settings.00N90000007MeZ6}"
+                                onchange="document.getElementById('theStepBodyDiv').style.display=(this.checked?'':'none');">
+                            </apex:inputField>
+                        </apex:PageBlockSection>
+
+
+                        <div style="display:{!IF(settings.ShowMessageStepBody__c==true,'','none')}" id="theStepBodyDiv">
+                            <apex:PageBlockSection title="Email step subject/body" columns="1" id="theEmailStepBody" collapsible="false" rendered="{!emailserv.needCreate==false}">
+                                <apex:PageBlockSectionItem id="theEmailSubjectSection">
+                                    <apex:outputLabel value="Subject"
+                                        for="theEmailSubject" />
+                                    <apex:outputText value="Etaworkforce activity" id="theEmailSubject"></apex:outputText>
+                                </apex:PageBlockSectionItem>
+                                <apex:PageBlockSectionItem id="theEmailBodySection">
+                                    <apex:outputLabel value="Body"
+                                        for="theEmailSubject" />
+                                    <apex:inputTextarea readonly="true"  style="width:80%;max-width:700px;height:250px;" value="{!MessageStepBody}" />
+                               </apex:PageBlockSectionItem>
+                            </apex:PageBlockSection>
+                        </div>
+                    </apex:PageBlock>
+                </apex:PageBlockSection>
+            </apex:outputPanel>
+
+
+            <apex:PageBlockSection title="Fields mapping" columns="1"
+                collapsible="false" id="theMappingPageBlockSection">
+                <apex:actionFunction name="reloadSimpleMapping" status="mappingStatus" />
+
+                <apex:PageBlockSection columns="1">
+                    <apex:inputField value="{!settings.00N90000007MeYn}"
+                        onchange="localAdvanced=this.checked;UpdateSimpleMappingDisplay();" />
+                </apex:PageBlockSection>
+
+                <apex:PageBlock mode="maindetail" id="theMappingPageBlock">
+                         <apex:actionFunction name="reloadTriggers" action="{!dummy}"
+                                rerender="theTriggerBlock,theEmailStepBody"/>
+
+                    <apex:PageBlockSection columns="1" id="theMappingPageBlockSubSection">
+
+                        <apex:PageBlockSectionItem id="theMappingPageBlockSubSectionItem">
+                            <apex:OutputLabel value="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZ2.Label}"
+                                for="theMainObject" />
+                            <apex:selectList value="{!objectType}" size="1"
+                                id="theMainObject" 
+                                style="padding:3px;width:80%;max-width:700px">
+                                <apex:selectOption itemValue="--None--" itemLabel="--None--" />
+                                <apex:selectOptions value="{!customObjects}" />
+                                <apex:actionSupport event="onchange"
+                                    rerender="theMappingPageBlockSection,theEmailStepBody,theSimpleFeldsSection" status="mappingStatus" />
+                            </apex:selectList>
+                        </apex:PageBlockSectionItem>
+                        <apex:pageBlockSectionItem rendered="{!objectTriggersSize!='0'}">
+                            <apex:outputLabel value="{!$ObjectType.TOA__ETAworkforceSettings__c.Fields.00N90000007MeZ1.Label}" for="theTriggersPanel" />
+                                <apex:outputPanel style="width:80%;max-width:700px;display:block">
+                                    <apex:pageBlockTable value="{!objectTriggers}" var="tr" id="theTriggersTable" style="width:100%">
+                                        <apex:column headerValue="Action" width="5%" styleClass="actionColumn">
+                                            <apex:outputLink value="{!URLFOR('/setup/build/editApexTrigger.apexp',null,[id=tr.id])}"
+                                                styleClass="actionLink" target="_EditTrigger">Edit</apex:outputLink>
+                                        </apex:column>
+                                        <apex:column value="{!tr.Status}" style="width:5%;" />
+                                        <apex:column headerValue="{!$ObjectType.ApexTrigger.Fields.Name.Label}" style="width:auto;">
+                                            <apex:outputLink value="{!URLFOR('/'+tr.id)}" target="_ViewTrigger">{!tr.Name}</apex:outputLink>
+                                        </apex:column>
+                                        <apex:column value="{!tr.LastModifiedById}" style="width:auto;" />
+                                        <apex:column value="{!tr.LastModifiedDate}" style="width:auto;" />
+                                    </apex:pageBlockTable>
+                                 </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                    </apex:PageBlockSection>
+                    <script type="text/javascript">
+                            function CreateTrigger()
+                            {
+                                var output=document.getElementById('triggerMsg');
+                                var tbl=document.getElementById('triggerMsgTable');
+                                var triggerNameCtrl=document.getElementById('{!$Component.thePage.theForm.thePageBlock.theMappingPageBlockSection.theMappingPageBlock.theMappingPageBlockSubSection.theMappingPageBlockSubSectionItem.theMainObject}')
+                                if(triggerNameCtrl.value[0]=='-')
+                                {
+                                     output.innerHTML = 'Please select object name first';                                                                        
+                                     tbl.style.display='';
+                                     throw new Exception(output.innerHTML);
+                                }
+                                else
+                                     tbl.style.display='none'; 
+                                if('{!JSENCODE(objectTriggersSize)}'=='0')
+                                    return createTrigger("{!GETSESSIONID()}","{!JSENCODE(triggerBody)}",output,tbl)
+                                return true;
+                            }
+                    </script>
+
+
+                        <apex:PageBlockSection title="Simple fields mapping" columns="1" id="theSimpleFeldsSection">
+                            <apex:PageBlock mode="maindetail" id="theBlock">
+                                <apex:pageBlockButtons >
+                                    <img src="/img/loading.gif" style="visibility:hidden" id="mappingProcessIcon"/>
+                                    <apex:actionStatus id="mappingStatus"
+                                        onstart="document.getElementById('mappingProcessIcon').style.visibility='visible'" onstop="document.getElementById('mappingProcessIcon').style.visibility='hidden';UpdateSimpleMappingDisplay();">
+                                    </apex:actionStatus>
+                                    <apex:commandButton styleClass="btn" style="padding:5px;" value="Edit..." 
+                                       action="{!URLFOR($Page.ETAworkforceEditSimpleFieldsMappingPage,null,['objname'=objectType,'advanced'=IF(settings.AdvancedMode__c==true,"true","false"),'retUrl'=$Page.ETAworkforceSettingsPage])}"/> 
+                                </apex:pageBlockButtons>
+
+                                <apex:pageBlockTable value="{!simpleMappingFieldsForView}" var="sf"
+                                    id="theSimpleFields">
+                                   <div class="AdvancedMode">
+                                    <apex:column headerValue="Action" width="8%" styleClass="actionColumn {!sf.00N90000007MeZR}" style="padding:5px;">
+                                        <apex:commandLink target="_blank" action="{!URLFOR($Page.ETAworkforceMappingDictionaryPage,null,['dsfn'=sf.Notification_field_name__c,'objname'=sf.MainObject__c])}" 
+                                        value="Dictionary" rendered="{!IF(sf.00N90000007MeZM>=1.0,"true","false")}" styleClass="{!sf.00N90000007MeZR} {!IF(sf.00N90000007MeZM==2.0,"actionLink","")}"/>
+                                    </apex:column>
+
+                                    <apex:column value="{!sf.00N90000007MeZP}" width="10%" style="font-weight:bold" styleClass="{!sf.00N90000007MeZR}"/>
+                                    <apex:column headerValue="Description" value="{!$ObjectType.TOA__ETAworkforceNotification__c.fields[sf.00N90000007MeZQ].InlineHelpText}" 
+                                        width="30%" styleClass="{!sf.00N90000007MeZR}" headerClass="SimpleMode"/>
+                                    <apex:column headerValue="{!$ObjectType.TOA__SimpleMappingField__c.Fields.00N90000007MeZL.Label}"
+                                        width="5%" styleClass="{!sf.00N90000007MeZR}" value="{!sf.00N90000007MeZL}">
+                                    </apex:column>
+                                    <apex:column value="{!sf.00N90000007MeZQ}" width="5%"
+                                        styleClass="AdvancedMode {!sf.00N90000007MeZR}" headerClass="AdvancedMode"/>
+                                    <apex:column headerValue="{!$ObjectType.TOA__SimpleMappingField__c.Fields.00N90000007MeZS.Label}" styleClass="{!sf.00N90000007MeZR}">
+                                        <div class="fieldButton" id="{!sf.00N90000007MeZQ}">{!sf.00N90000007MeZS}</div>
+                                        <div id="Edit_{!sf.00N90000007MeZQ}">
+                                            <apex:inputHidden value="{!sf.00N90000007MeZS}" />
+                                        </div>
+                                        <div id="EditType_{!sf.00N90000007MeZQ}">
+                                            <apex:inputHidden value="{!sf.00N90000007MeZO}" />
+                                        </div>
+                                    </apex:column>
+                                   </div>
+                                </apex:pageBlockTable>
+                            </apex:PageBlock>
+                        </apex:PageBlockSection>
+                </apex:PageBlock>
+            </apex:PageBlockSection>
+        </apex:PageBlock>
+    </apex:form>
+    <apex:PageBlock mode="maindetail" id="theNotificationBlock">
+        <apex:PageBlockSection title="{!$ObjectType.TOA__ETAworkforceNotification__c.LabelPlural}" columns="1">
+            <c:ETAworkforceNotificationsList rows="10"/>
+        </apex:PageBlockSection>
+    </apex:PageBlock>
+</apex:page>

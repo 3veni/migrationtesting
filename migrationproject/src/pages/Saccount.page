@@ -1,0 +1,39 @@
+<apex:page standardController="Account" showHeader="true" tabStyle="account" >
+<apex:form >
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready(function(){
+  $("ul").click(function(){
+    $("#div3").addClass("important blue");
+  });
+});
+</script>
+<style type="text/css">
+.important
+{
+font-weight:bold;
+font-size:xx-large;
+}
+.blue
+{
+color:blue;
+}
+</style>
+
+<table>
+<tr>
+<td id="flip">
+<apex:commandlink value="hi" />
+</td>
+</tr>
+<tr>
+<td>
+<ul id="div3">hi hello</ul>
+<apex:commandlink id="h" value="hello"/>
+</td>
+</tr>
+</table>
+
+</apex:form>
+</apex:page>

@@ -1,0 +1,207 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="ETAblack.Workforce2_HelpCtrl">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>{!$Label.ProductName} Help</title>
+    </head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" language="JavaScript" type="text/javascript"/>
+        <style type="text/css">
+            div.book_open
+            {
+                width: 16px; height: 12px; vertical-align: middle;display:inline-block;
+                background-image: url({!URLFOR($Resource.Workforce2_Help,'/common/book_open.png')});
+                background-repeat: no-repeat;
+            }
+            div.book_close
+            {
+                width: 16px; height: 12px; vertical-align: middle;display:inline-block;
+                background-image: url({!URLFOR($Resource.Workforce2_Help,'/common/book_close.png')});
+                background-repeat: no-repeat;
+            }
+            div.file
+            {
+                width: 16px; height: 12px; vertical-align: middle;display:inline-block;
+                background-image: url({!URLFOR($Resource.Workforce2_Help,'/common/file.png')});
+                background-repeat: no-repeat;
+            }
+            div.tocentry
+            {
+                position: relative; display: block;
+                font-size: 10pt; font-weight: normal; font-style: normal; color: rgb(0, 0, 0);
+                cursor: pointer;
+                white-space: nowrap;
+                padding-top: 1px;
+                padding-bottom: 1px;
+            }
+            div.tocitem
+            {
+                position: relative; display:inline-block;;
+                font-size: 10pt; font-weight: normal; font-style: normal; color: rgb(0, 0, 0);
+                cursor: pointer;
+                white-space: nowrap;
+                text-indent:0px;
+            }
+            span.opened
+            {
+                display:;
+            }
+            span.closed
+            {
+                display:none;
+            }
+            div.currentToc
+            {
+                outline: 1px dotted gray;
+            }
+        </style>
+        <apex:variable value="{!NULLVALUE($CurrentPage.parameters.id,'HomePage')}" var="pageId"/>
+        <apex:outputPanel rendered="{!AND($CurrentPage.parameters.frame=='',pageId!='Glossary')}">
+            <frameset cols="300, *" framespacing="2" border="4">
+                <frame scrolling="no" onresize="frames['navigation'].SetIFrameHeight();" frameborder="0" title="Navigation" name="navigation" id="navigation"
+                    src="{!URLFOR($Page.Workforce2_HelpPage,null,['frame'='navigation','id'=pageId])}" >
+                </frame>
+                 <frame src="{!URLFOR($Resource.Workforce2_Help,pageId&'/index.html',['frame'='topic','id'=pageId])}" frameborder="1" title="Topic" name="topic" id="topic">
+                </frame>
+            </frameset>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!pageId='Glossary'}">
+            <link rel="stylesheet" href="https://www.salesforce.com/us/developer/docs/apexcode/Content/help.css" title="help.css" />
+            <h1 class="helpHead1">Glossary</h1>
+            <div class="body">
+                <apex:repeat value="{!Glossary}" var="k">
+                    <a class="xref" href="#{!k}"><strong class="ph uicontrol">{!k}</strong></a>|
+                </apex:repeat>
+                <div class="section">
+                    <apex:repeat value="{!Glossary}" var="k">
+                        <h2 class="helpHead2"><a name="{!k}"></a>{!k}</h2>
+                        <apex:repeat value="{!Glossary[k]}" var="i">
+                            <dl class="dl">
+                                <dt class="dt"><a name="{!i.name}"></a>{!i.name}</dt>
+                                <dd class="dd">
+                                    <span class="ph">{!i.description}</span>
+                                </dd>
+                            </dl><br/>
+                        </apex:repeat>
+                        <br/>
+                    </apex:repeat>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.frame=='navigation'}">
+            <html>
+                <body>
+                <script  language="JavaScript" type="text/javascript">
+                    function ToggleTocItem(item,id)
+                    {
+                        var ctrl=$(item);
+                        if((id=='Template') || ctrl.hasClass("currentToc"))
+                        {
+                            ctrl.parent().children("span").toggleClass("opened closed");
+                            ctrl.prev("div").toggleClass("book_open book_close");
+                        }
+                        else
+                        {
+                            parent.frames['topic'].document.location=(id=="Glossary"?"{!URLFOR($Page.Workforce2_HelpPage,null,['frame'='topic','id'='Glossary'])}":"{!URLFOR($Resource.Workforce2_Help)}/"+id+"/index.html");
+                            $(".currentToc").removeClass("currentToc");
+                            ctrl.addClass("currentToc");
+                        }
+                    }
+                    function showOpened(ctrl,recursive,counter)
+                    {
+                        if(ctrl.length==0)
+                            return;
+                        var closed=ctrl.parent().children("span.closed");
+                        closed.addClass("opened");
+                        closed.removeClass("closed");
+                        closed=ctrl.prev("div.book_close");
+                        closed.addClass("book_open");
+                        closed.removeClass("book_close");
+                        if(recursive&&counter<10)
+                        {
+                            var parent_ctrl=ctrl.parent("div.tocentry").parent("span").parent("div.tocentry").children("div.tocitem");
+                            showOpened(parent_ctrl,recursive,counter+1);
+                        }
+                    }
+                    function OpenTocItem(id)
+                    {
+                        parent.frames['topic'].document.location=(id=="Glossary"?"{!URLFOR($Page.Workforce2_HelpPage,null,['frame'='topic','id'='Glossary'])}":"{!URLFOR($Resource.Workforce2_Help)}/"+id+"/index.html"); 
+                        $(".currentToc").removeClass("currentToc");
+                        var ctrl=$("div[tocid='"+id+"']");
+                        if(ctrl==undefined)
+                            return;
+                        ctrl.addClass("currentToc");
+                        showOpened(ctrl,true,0);
+                    }
+                    function CloseAllTocItems()
+                    {
+                        var ctrl=$("div.tocentry");
+                        if(ctrl==undefined)
+                            return;
+                        var opened=ctrl.children("span.opened");
+                        opened.addClass("closed");
+                        opened.removeClass("opened");
+                        opened=ctrl.children("div.book_open");
+                        opened.addClass("book_close");
+                        opened.removeClass("book_open");
+                    }
+                    $(document).ready(function() {
+                        $("div.tocentry>span").parent("div").children("div.file").attr("class","book_open")
+                        $("div.tocitem").click(function(){
+                                                   ToggleTocItem(this,this.getAttribute("tocid"));
+                                                });
+                        CloseAllTocItems();
+                        OpenTocItem('{!pageId}');
+                    });
+
+    </script>
+    <apex:variable var="level" value="0" />
+    <apex:repeat value="{!Resources}" var="item">
+        <apex:outputPanel rendered="{!item.Tree.size==1}">
+            <div class="tocentry" style="">
+                <div class="file" />
+                <div class="tocitem" tocid="{!item.Name}">{!item.Tree[0]}</div>
+                <apex:repeat value="{!Resources}" var="item1">
+                    <apex:outputPanel rendered="{!item1.Tree.size==2 && item1.Tree[0]==item.Tree[0]}" styleClass="opened">
+                        <div class="tocentry" style="text-indent:16px;">
+                            <div class="file" />
+                            <div class="tocitem" tocid="{!item1.Name}">{!item1.Tree[1]}</div>
+                            <apex:repeat value="{!Resources}" var="item2">
+                                <apex:outputPanel rendered="{!item2.Tree.size==3 && item2.Tree[0]==item1.Tree[0] && item2.Tree[1]==item1.Tree[1]}" styleClass="opened">
+                                    <div class="tocentry" style="text-indent:32px;">
+                                        <div class="file"/>
+                                        <div class="tocitem" tocid="{!item2.Name}">{!item2.Tree[2]}</div>
+                                        <apex:repeat value="{!Resources}" var="item3">
+                                            <apex:outputPanel styleClass="opened" rendered="{!item3.Tree.size==4 && item3.Tree[0]==item2.Tree[0] && item3.Tree[1]==item2.Tree[1] && item3.Tree[2]==item2.Tree[2]}">
+                                                <div class="tocentry" style="text-indent:48px;">
+                                                    <div class="file"/>
+                                                    <div class="tocitem" tocid="{!item3.Name}">{!item3.Tree[3]}</div>
+                                                    <apex:repeat value="{!Resources}" var="item4">
+                                                       <apex:outputPanel styleClass="opened" rendered="{!item4.Tree.size>=5 && item4.Tree[0]==item3.Tree[0] && item4.Tree[1]==item3.Tree[1] && item4.Tree[2]==item3.Tree[2] && item4.Tree[3]==item3.Tree[3]}">
+                                                            <div class="tocentry" style="text-indent:64px;">
+                                                                <div class="file"/>
+                                                                <div class="tocitem" tocid="{!item4.Name}">{!item4.Tree[item4.Tree.size-1]}</div>
+                                                            </div>
+                                                        </apex:outputPanel>
+                                                    </apex:repeat>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:repeat>
+                                        </div>
+                                </apex:outputPanel>
+                            </apex:repeat>
+                        </div>
+                    </apex:outputPanel>
+                </apex:repeat>
+            </div>
+        </apex:outputPanel>
+    </apex:repeat>
+    <apex:outputPanel styleClass="opened">
+        <div class="tocentry" style="text-indent:0px;">
+            <div class="file"/>
+            <div class="tocitem" tocid="Glossary">Glossary</div>
+        </div>
+    </apex:outputPanel>
+    </body>
+    </html>
+    </apex:outputPanel>
+</apex:page>

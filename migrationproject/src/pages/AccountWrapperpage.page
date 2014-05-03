@@ -1,0 +1,50 @@
+<apex:page controller="AccountWrapperList" id="pageid">
+ <apex:pageBlock id="pbid">
+     <apex:form id="formid">
+         <apex:pageBlockTable value="{!lstWrap}" var="objWrap" id="ppt">
+            <!-- Index Column !-->
+            <apex:column headerValue="Index">
+                {!objWrap.index}
+            </apex:column>
+            <apex:column >
+                
+                <apex:commandLink value="Edit" action="{!DoEdit}" reRender="ppt" rendered="{!!objWrap.isEdit}">
+                    <apex:param name="EditIndex" value="{!objWrap.index}" assignTo="{!editIndex}"/>
+                </apex:commandLink>
+                
+                <apex:commandLink value="save" action="{!save}" rendered="{!objWrap.isEdit}" 
+                    reRender="ppt" onclick=" return checkName('{!objWrap.index}')">
+                    <apex:param value="{!objWrap.index}" assignTo="{!editIndex}"/>
+                </apex:commandLink><br/>
+                <apex:commandLink value="cancel" action="{!cancel}" rendered="{!objWrap.isEdit}" reRender="ppt"> 
+                    <apex:param value="{!objWrap.index}" assignTo="{!editIndex}"/>
+                </apex:commandLink>
+            </apex:column>
+            
+            <!-- Name Column !-->
+            <apex:column headerValue="Name">
+                <apex:outputField value="{!objWrap.objAcc.Name}" rendered="{!!objWrap.isEdit}" id="outfield"/>
+                <apex:inputField value="{!objWrap.objAcc.Name}" rendered="{!objWrap.isEdit}" id="infield"/>
+            </apex:column>
+            
+            <!-- buttons column -->
+            
+              
+         </apex:pageBlockTable>
+         
+         <script>
+             function checkName(indexval)
+             {
+                 var Nameval = document.getElementById("pageid:pbid:formid:ppt:"+indexval"+:infield").value;
+                 if(Nameval==null || Nameval==''){
+                    alert("Please Enter your Name");
+                    return false;
+                  }
+                  return true;
+              }
+         </script>
+         
+     </apex:form>
+ </apex:pageBlock> 
+ 
+</apex:page>

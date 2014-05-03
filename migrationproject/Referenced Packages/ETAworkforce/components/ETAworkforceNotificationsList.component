@@ -1,0 +1,147 @@
+<apex:component controller="TOA.ETAworkforceNotificationsController" 
+    allowDML="true">
+    <apex:attribute name="ParentId"
+        description="This is the Id for object owned notifications" type="Id"
+        required="false" assignTo="{!componentParentId}" />
+    <apex:attribute name="status" description="This is the status filter"
+        type="String" required="false" assignTo="{!componentStatusFilter}" />
+    <apex:attribute name="unread"
+        description="This is the unread only flag filter" type="Boolean"
+        required="false" assignTo="{!componentOnlyUnread}" />
+    <apex:attribute name="fields"
+        description="This is the list of the selected fileds" type="String"
+        required="false" assignTo="{!componentFields}" />
+    <apex:attribute name="showToolBar"
+        description="Show ETAworkforce toolbar" type="Boolean"
+        required="false" default="true"/>
+    <apex:attribute name="rows"
+        description="The number of rows in this Notifications table." type="Integer"
+        required="false" default="20" assignTo="{!Increment}"/>
+    <apex:attribute name="first"
+        description="The first element in the iteration visibly rendered in the page block table." type="Integer"
+        required="false" default="0" assignTo="{!Current}"/>
+
+    <apex:form >
+        <apex:actionFunction name="markNotificationAsRead"
+                action="{!markNotificationAsRead}" rerender="theBlock">
+                <apex:param name="id" value="" />
+        </apex:actionFunction>
+
+        <apex:pageBlock id="theBlock" >
+        <table width="100%">
+        <tr width="100%">
+        <td style="text-align:left;width:20%">
+        <apex:outputText value="{!IF(notifications.size==0,0,NULLVALUE(startFrom,0)+1)} to {!IF(NULLVALUE(startFrom,0)+rows<=notifications.size,NULLVALUE(startFrom,0)+rows,notifications.size)} of {!notifications.size}"/>
+        </td>
+        <td style="text-align:right;width:100%">
+        <apex:commandLink styleClass="actionLink" style="color:#015BA7;text-decoration:none;" value="< Previous" reRender="theBlock" action="{!PreviousPage}" rendered="{!IF(NULLVALUE(startFrom,0)!=0,true,false)}"/>
+        <apex:outputText style="color:gray" value="< Previous" rendered="{!IF(NULLVALUE(startFrom,0)!=0,false,true)}"/>
+|&nbsp;
+        <apex:commandLink styleClass="actionLink"  style="color:#015BA7;text-decoration:none;" value="Next >" reRender="theBlock" action="{!NextPage}" rendered="{!IF(NULLVALUE(startFrom,0)<notifications.size-rows,true,false)}"/>
+        <apex:outputText style="color:gray" value="Next >" rendered="{!IF(NULLVALUE(startFrom,0)<(notifications.size-rows),false,true)}"/>
+        </td>
+        </tr>
+</table>
+
+            <apex:pageBlockButtons location="top">
+                <img src="/img/loading.gif" style="visibility:hidden" id="processIcon"/>
+                <apex:actionStatus id="status"
+                    onstart="document.getElementById('processIcon').style.visibility='visible'" onstop="document.getElementById('processIcon').style.visibility='hidden'">
+                </apex:actionStatus>
+
+                <apex:commandLink action="{!sendSynchronousFromWeb}" 
+                          value="Process {!$ObjectType.TOA__ETAworkforceNotification__c.LabelPlural}" reRender="theBlock" styleClass="btn" status="status"
+                          style="padding:5px; text-decoration:none;"/>                        
+
+                <apex:commandLink action="{!clearNotifications}" 
+                          value="Delete {!$ObjectType.TOA__ETAworkforceNotification__c.LabelPlural}" reRender="theBlock" styleClass="btn" status="status"
+                          style="padding:5px; text-decoration:none;margin-top:10px;"/>                        
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!notifications}" var="notif" id="theTable" first="{!startFrom}" rows="{!rows}">
+                <apex:column headerValue="Action" width="5%"
+                    styleClass="actionColumn">
+                     <apex:commandLink action="{!URLFOR($Action.ETAworkforceNotification__c.Delete,notif.Id,['retURL'=$Page[$CurrentPage.Name]&'?status='&$CurrentPage.parameters.status])}" 
+                          value="Delete" reRender="theBlock" styleClass="actionLink" status="status"/>                        
+                |&nbsp;
+                    <apex:commandLink action="{!sendSynchronousFromWeb}" 
+                          value="Send" reRender="theBlock" styleClass="actionLink" rendered="{!notif.00N90000007MeY7!='received'}" status="status">                        
+                          <apex:param name="id" value="{!notif.Id}" />
+                    </apex:commandLink>
+
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.TOA__ETAworkforceNotification__c.Fields.00N90000007MeYi.Label}" width="1%">
+                    <apex:inputField value="{!notif.00N90000007MeYi}" onchange="markNotificationAsRead('{!notif.Id}')" />
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.TOA__ETAworkforceNotification__c.Fields.Name.Label}"
+                    width="5%">
+                    <a
+                        href="{!URLFOR($Action.ETAworkforceNotification__c.View,notif.Id)}">{!notif.Name}</a>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.TOA__ETAworkforceNotification__c.Fields.00N90000007MeY4.Label}"
+                    width="10%">
+                    <a href="{!URLFOR('/'+notif.00N90000007MeY3)}">{!notif.00N90000007MeY4}</a>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.TOA__ETAworkforceNotification__c.Fields.00N90000007MeY7.Label}"
+                    style="{!if(notif.Status__c=="
+                    failed",'color:red;font-weight:bold',if(notif.Status__c==
+                    "delivered",'color:blue',if(notif.Status__c==
+                    "received",'color:green','')))}" width="5%">{!notif.00N90000007MeY7}</apex:column>
+                <apex:repeat value="{!dynamicColumns}" var="colItem">
+                    <apex:column >
+                        <apex:facet name="header">{!fieldLabel[colItem]}</apex:facet>
+                        <apex:outputField value="{!notif[colItem]}"></apex:outputField>
+                    </apex:column>
+                </apex:repeat>
+            </apex:pageBlockTable>
+
+
+         </apex:pageBlock>
+
+    <style type="text/css">
+.toolbar {
+    background-color: #F15D22;
+    background-image: url("");
+    height: 2.5em;
+}
+
+.toolbar td {
+    vertical-align: middle;
+}
+
+.toolbar a {
+    color: #7D3520;
+}
+
+.rounded {
+    -moz-border-radius: 1em;
+    border-radius: 1em;
+    -webkit-border-radius: 1em;
+}
+
+.shadowed {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+</style>
+
+      <apex:toolbar id="theToolbar" itemSeparator="grid"
+        contentClass="rounded" separatorClass="separator"
+        contentStyle="vertical-align:middle"
+        styleClass="toolbar rounded shadowed"
+        rendered="{!showToolBar}"
+        >
+        <apex:outputText value="ETAworkforce Toolbar" />
+        <apex:toolbarGroup id="toobarGroupLinks">
+            <apex:outputLink value="http://toatech.com/ETAworkforce">ETAworkforce</apex:outputLink>
+            <apex:outputLink value="http://toatech.com/support">Support</apex:outputLink>
+        </apex:toolbarGroup>
+        <apex:toolbarGroup >
+            <apex:outputLink value="http://developer.salesforce.com">Apex developer network</apex:outputLink>
+        </apex:toolbarGroup>
+        <apex:toolbarGroup location="right">
+            <apex:outputLink value="http://toatech.com" style="color:blue">TOA technologies</apex:outputLink>
+        </apex:toolbarGroup>
+      </apex:toolbar>
+    </apex:form>
+</apex:component>

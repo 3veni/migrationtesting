@@ -1,0 +1,40 @@
+<apex:page standardController="Position__c" title="Sample Position Layout Page" showHeader="true" sidebar="true" >
+  <!-- Uses <apex:actionSupport> to dynamically render the Technical Skills section of the Layout when Dept = IT, Engineering. -->
+  <apex:sectionHeader title="{!$ObjectType.Position__c.label} Edit" subtitle="New Position"/>
+  <apex:form >
+      <apex:pageBlock title="Position Detail" mode="edit" id="thePageBlock">
+        <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!save}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}"/>
+        </apex:pageBlockButtons>
+        <apex:actionRegion >
+        <apex:pageBlockSection title="Information" columns="2">
+            <apex:inputField value="{!Position__c.name}"/>           
+            <apex:inputField value="{!Position__c.Location__c}"/>
+           
+            <apex:inputField value="{!Position__c.Type__c}"/>
+           <apex:actionSupport event="onchange" rerender="thePageBlock"/>
+                     
+            
+            
+            <apex:pageBlockSectionItem />
+            <apex:inputField value="{!Position__c.Hiring_manager__c}"/>
+            <apex:pageBlockSectionItem />
+           
+            <apex:pageBlockSectionItem />
+            
+            <apex:pageBlockSectionItem />
+        </apex:pageBlockSection>
+        </apex:actionRegion>
+        
+        
+        
+        <apex:pageBlockSection title="Description" columns="3">
+            <apex:inputField value="{!Position__c.Job_Description__c}" />
+            <apex:inputField value="{!Position__c.Responsibilities__c}" />
+            <apex:inputField value="{!Position__c.Skills_Required__c}" />
+            
+        </apex:pageBlockSection>
+     </apex:pageBlock>
+  </apex:form>
+</apex:page>

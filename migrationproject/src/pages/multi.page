@@ -1,0 +1,13 @@
+<apex:page controller="multiSelectCon">
+    <apex:form >
+        <apex:selectList value="{!values}" multiselect="true">
+            <apex:selectOption itemLabel="a" itemValue="a"/>
+            <apex:selectOption itemLabel="b" itemValue="b"/>
+            <apex:selectOption itemLabel="c" itemValue="c"/>
+        </apex:selectList>
+        <apex:commandButton value="Submit" rerender="out"/>
+        <apex:panelGrid columns="2" id="out" border="1">
+            Selected:<apex:dataList value="{!values}" var="val">{!val}</apex:dataList>
+        </apex:panelGrid>
+    </apex:form>
+</apex:page>

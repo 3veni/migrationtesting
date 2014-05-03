@@ -1,0 +1,38 @@
+<apex:page controller="NavigationPage">
+<apex:form id="form" >
+<apex:pageBlock title="Accounts">
+  <apex:pageMessages ></apex:pageMessages>
+  <apex:pageblockTable value="{!sublstAcc }" var="row">
+     <apex:column >
+       <apex:commandlink value="edit" rendered="{!outputmode}" action="{!enterinputmode}" />
+       <apex:param name="id" value="{!row.id}"/>;&nbsp;|&nbsp;
+       <apex:commandLink value="save" rendered="{!inputmode}" action="{!exitinputmode}"/>
+       <a href="javascript:if (window.confirm('Are you sure?')) DeleteAccount('{!row.Id}');" style="font-weight:bold">Del</a> 
+    
+     </apex:column>
+     <apex:column value="{!row.Name}" rendered="{!inputmode}"/><apex:column value="{!row.Name}" rendered="{!outputmode}"/>
+     <apex:column value="{!row.BillingStreet}" rendered="{!inputmode}"/><apex:column value="{!row.BillingStreet}" rendered="{!outputmode}"/>
+     <apex:column value="{!row.BillingCity}" rendered="{!inputmode}"/>   <apex:column value="{!row.BillingCity}" rendered="{!outputmode}"/>
+     <apex:column value="{!row.BillingPostalCode}" rendered="{!inputmode}"/><apex:column value="{!row.BillingPostalCode}" rendered="{!outputmode}"/>
+     <apex:column value="{!row.BillingCountry}" rendered="{!inputmode}"/><apex:column value="{!row.BillingCountry}" rendered="{!outputmode}"/>
+  </apex:pageblockTable>
+</apex:pageBlock>
+ <apex:panelGrid columns="4">
+            <apex:commandButton value="First" action="{!First}" rendered="{!FirstPageFlag}">
+                 <apex:param value="{!PageIndex }" assignTo="{!Isok}"/>
+            </apex:commandButton>
+            <apex:commandButton value="Last" action="{!Last}" rendered="{!LastPageFlag}"> 
+                <apex:param value="{!PageIndex}" assignTo="{!Isok}"/>
+            </apex:commandButton>
+             <apex:commandButton value="Next" action="{!Next}" rendered="{!NextPageFlag}" > 
+                <apex:param value="{!PageIndex}" assignTo="{!Isok}"/>
+            </apex:commandButton>
+            <apex:commandButton value="Prev" action="{!Prev}" rendered="{!PrevPageFlag}">
+                <apex:param value="{!PageIndex}" assignTo="{!Isok}"/>
+            </apex:commandButton>
+         </apex:panelGrid>
+<apex:actionFunction action="{!DeleteAccount}" name="DeleteAccount" reRender="form" >
+   <apex:param name="accountid" value="" assignTo="{!SelectedAccountId}"/>
+</apex:actionFunction>
+</apex:form>
+</apex:page>

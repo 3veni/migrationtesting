@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Country</label>
+        <picklist>
+            <picklistValues>
+                <fullName>US</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ETA_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>ETA Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ETAdirect_Integration__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>ETAdirect Integration</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Failed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Successful</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <webLinks>
+        <fullName>Create_Resource</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Resource</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/27.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/27.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectCreateResource&quot;, &quot;callResource&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_User</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create User</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectCreateUser&quot;, &quot;callResource&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Delete_User</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Delete User</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/27.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/27.0/apex.js&quot;)} 
+try 
+{ 
+	this.value = &quot;Deleting User...&quot;; 
+	var result = sforce.apex.execute(&quot;ETAblack.ETAdirectDeleteUser&quot;,
+                 &quot;callResource&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+	var deleteExisting = sforce.connection.queryAll(&quot;select Id from ETAblack__ETAuserContact__c where Contact__c = &apos;{!Contact.Id}&apos;&quot;); 
+	var records = deleteExisting.getArray(&quot;records&quot;); 
+	
+	var deleteRecords = []; 
+	for (var i = 0; i &lt; records.length; i++) 
+	{ 
+		deleteRecords.push(records[i].Id); 
+	} 
+
+	if(deleteRecords.length &gt; 0) 
+	{ 
+		try 
+		{ 
+			sforce.connection.deleteIds(deleteRecords); 
+		} 
+		catch(error) 
+		{ 
+			alert(error); 
+		} 
+	}
+	alert(result); 
+} 
+catch(error) 
+{ 
+	alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_Capacity</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get Capacity</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var iDays = 45;
+
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetCapacityService&quot;, &quot;getCapacity&quot;, {contactId: &quot;{!Contact.Id}&quot;,capacityDates: iDays}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_Resource</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get Resource</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetResource&quot;, &quot;callResource&quot;, {contactId: &quot;{!Contact.Id}&quot;,etaDatetimeProxy: &quot;{!NOW()}&quot;});
+alert(result);
+} 
+catch(error) 
+{ 
+alert(error); 
+}
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_Resource_List</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get Resource List</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetResourcesList&quot;, &quot;callResources&quot;,{}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_Resource_Skills</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get Resource Skills</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetResourcesSkills&quot;, &quot;getResourcesSkills&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_Resource_Zones</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get Resource Zones</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetResourcesZones&quot;, &quot;getResourcesZones&quot;, {contactId: &quot;{!Contact.Id}&quot;, startDateProxy: &quot;{!NOW()}&quot;, endDate: &quot;{!NOW() + 7}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_Resources_Calendars</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get Resource Calendars</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetResourcesCalendars&quot;, &quot;getResourcesCalendars&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_Specific_Capacity</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get Specific Capacity</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.open(&apos;/apex/ETAblack__ETAdirectGetCapacity?contactId={!Contact.Id}&apos;,&apos;newwindow&apos;,&apos;height=440,width=640,top=&apos;+(screen.height/2-220)+&apos;,left=&apos;+(screen.width/2-320)+&apos;,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no&apos;)</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_User</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get User</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetUser&quot;, &quot;callResource&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Get_User_List</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Get User List</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectGetUserList&quot;, &quot;callResource&quot;, {}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Set_Resources_Calendars</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Set Resource Calendars</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectSetResourcesCalendars&quot;, &quot;setResourcesCalendars&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Set_Resources_Skills</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Set Resource Skills</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectSetResourcesSkills&quot;, &quot;setResourcesSkills&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Set_Resources_Zones</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Set Resource Zones</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectSetResourcesZones&quot;, &quot;setResourcesZones&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Update_Resource</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Update Resource</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectUpdateResource&quot;, &quot;callResource&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Update_User</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Update User</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/26.0/apex.js&quot;)} 
+try 
+{ 
+var result = sforce.apex.execute(&quot;ETAblack.ETAdirectUpdateUser&quot;, &quot;callResource&quot;, {contactId: &quot;{!Contact.Id}&quot;}); 
+alert(result); 
+} 
+catch(error) 
+{ 
+alert(error); 
+} 
+window.location = window.location;</url>
+    </webLinks>
+</CustomObject>

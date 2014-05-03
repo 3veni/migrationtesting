@@ -1,0 +1,12 @@
+<apex:page controller="Filter">
+  <apex:form >
+  <apex:pageBlock >
+  <apex:outputLabel >name</apex:outputLabel> 
+    <apex:inputText value="{!s1}"/>
+  <apex:commandButton value="Go" action="{!Go}"/>
+  <apex:pageblockTable value="{!obj}" var="ob">
+  <apex:column value="{!ob.name}"/>
+  </apex:pageblockTable>  
+  </apex:pageBlock>
+  </apex:form>
+</apex:page>
